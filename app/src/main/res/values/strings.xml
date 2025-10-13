@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="how_are_you_doing_hint">How are you doing?</string>
+    <string name="description_send_button">Send message</string>
 </resources>

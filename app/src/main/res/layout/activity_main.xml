@@ -6,14 +6,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycler_view"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:padding="8dp"
+        android:id="@+id/bottom_layout">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/message_edit_text"
+            android:layout_centerInParent="true"
+            android:hint="@string/how_are_you_doing_hint"
+            android:padding="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="60dp"
+            android:autofillHints="no"
+            android:inputType="textMultiLine"
+            android:background="@drawable/rounded_corner"
+            android:maxLines="6"
+            />
+        <ImageButton
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/send_button"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:paddingStart="2dp"
+            android:paddingEnd="0dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/baseline_send_24"
+            android:background="@drawable/send_background"
+            android:contentDescription="@string/description_send_button"
+            />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
