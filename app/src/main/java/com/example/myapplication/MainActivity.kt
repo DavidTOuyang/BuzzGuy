@@ -1,18 +1,21 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
-import android.widget.Toast
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity (): AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val messageList: MutableList<Message> = mutableListOf()
+    private lateinit var myMessageAdapter: MessageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,18 +23,30 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // variables from xml
-        val myRecyclerView = binding.recyclerView
-        val myWelcomeText = binding.welcomeText
-        val myEditText = binding.messageEditText
-        val mySendButton = binding.sendButton
+        // setup recycler view
+        myMessageAdapter = MessageAdapter(messageList)
+        binding.recyclerView.adapter = myMessageAdapter
+        val llm = LinearLayoutManager(this)
+        llm.stackFromEnd = true
+        binding.recyclerView.layoutManager = llm
 
-        mySendButton.setOnClickListener {
-            val question = myEditText.text.toString().trim()
-
+        binding.sendButton.setOnClickListener {
+            val question = binding.messageEditText.text.toString().trim()
             if (question.isNotEmpty()) {
-                Toast.makeText(this, question, Toast.LENGTH_LONG).show()
+                addToChat(question, Message.SENT_BY_ME)
+                binding.messageEditText.setText("")
+                binding.welcomeText.visibility = View.GONE
             }
+        }
+    }
+
+    // method that adds a new chat
+    fun addToChat(message: String, sentBy: String) {
+        runOnUiThread {
+            messageList.add(Message(message, sentBy))
+            val newItemPosition = myMessageAdapter.itemCount
+            myMessageAdapter.notifyItemInserted(newItemPosition)
+            binding.recyclerView.smoothScrollToPosition(newItemPosition)
         }
     }
 }
