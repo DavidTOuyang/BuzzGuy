@@ -11,6 +11,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
 import java.time.Instant
 
 class MainActivity (): AppCompatActivity() {
@@ -18,11 +21,13 @@ class MainActivity (): AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val messageList: MutableList<Message> = mutableListOf()
     private lateinit var myMessageAdapter: MessageAdapter
+    private lateinit var analytics: FirebaseAnalytics
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        analytics = Firebase.analytics
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
