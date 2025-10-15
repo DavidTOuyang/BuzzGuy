@@ -1,15 +1,17 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
-
+import java.time.Instant
 
 class MainActivity (): AppCompatActivity() {
 
@@ -17,6 +19,7 @@ class MainActivity (): AppCompatActivity() {
     private val messageList: MutableList<Message> = mutableListOf()
     private lateinit var myMessageAdapter: MessageAdapter
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -33,7 +36,8 @@ class MainActivity (): AppCompatActivity() {
         binding.sendButton.setOnClickListener {
             val question = binding.messageEditText.text.toString().trim()
             if (question.isNotEmpty()) {
-                addToChat(question, Message.SENT_BY_ME)
+                val nowInstant = Instant.now()
+                addToChat(question, Message.SENT_BY_ME, nowInstant.toEpochMilli())
                 binding.messageEditText.setText("")
                 binding.welcomeText.visibility = View.GONE
             }
@@ -41,9 +45,9 @@ class MainActivity (): AppCompatActivity() {
     }
 
     // method that adds a new chat
-    fun addToChat(message: String, sentBy: String) {
+    fun addToChat(message: String, sentBy: String, timeStamp: Long) {
         runOnUiThread {
-            messageList.add(Message(message, sentBy))
+            messageList.add(Message(message, sentBy, timeStamp))
             val newItemPosition = myMessageAdapter.itemCount
             myMessageAdapter.notifyItemInserted(newItemPosition)
             binding.recyclerView.smoothScrollToPosition(newItemPosition)
