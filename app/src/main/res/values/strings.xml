@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">BuzzGuy</string>
     <string name="write_me_hint">Please write here</string>
     <string name="welcome_placeholder">Welcome to the\n Well-being Bot</string>
     <string name="description_send_button">Send message</string>
+    <string name="term">Term of Use</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

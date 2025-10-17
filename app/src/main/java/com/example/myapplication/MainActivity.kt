@@ -2,12 +2,19 @@ package com.example.myapplication
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.google.android.material.navigation.NavigationView
 
 // Firebase packages
 import com.google.firebase.Firebase
@@ -29,13 +36,14 @@ private const val TAG = "AnonymousAuth"
 private val auth: FirebaseAuth by lazy { Firebase.auth }
 private val fireDb: FirebaseFirestore by lazy { Firebase.firestore }
 
-class MainActivity (): AppCompatActivity() {
+class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var myMessageAdapter: MessageAdapter
     private lateinit var analytics: FirebaseAnalytics
     private var currentUserId: String? = null
     private var firestoreListener: ListenerRegistration? = null
+    private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +51,40 @@ class MainActivity (): AppCompatActivity() {
         analytics = Firebase.analytics
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Set up the toolbar
+        val toolbar: Toolbar = binding.toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        // setup drawer layout and navigation view
+        drawerLayout = binding.drawerLayout
+        val navigationView: NavigationView = binding.navView
+
+        // Create and set up the ActionBarDrawerToggle
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        navigationView.setNavigationItemSelectedListener(this)
+
+        // Handle back presses for the navigation drawer
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    // Let the system handle the back press as it normally would
+                    isEnabled = false // Disable this callback
+                    onBackPressedDispatcher.onBackPressed() // Trigger the default back behavior
+                }
+            }
+        })
 
         // setup recycler view
         myMessageAdapter = MessageAdapter()
@@ -157,11 +199,6 @@ class MainActivity (): AppCompatActivity() {
             Timestamp.now()
         )
 
-//            messageList.add(messageInput)
-//            val newItemPosition = myMessageAdapter.itemCount
-//            myMessageAdapter.notifyItemInserted(newItemPosition)
-//            binding.recyclerView.smoothScrollToPosition(newItemPosition)
-
         // send the message directly to Firestore
         chatRef.add(messageData)
             .addOnSuccessListener { documentReference ->
@@ -171,5 +208,21 @@ class MainActivity (): AppCompatActivity() {
                 Log.w(TAG, "Error adding document", e)
                 Toast.makeText(this, "Failed to send message.", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    // Handle clicks on the navigation drawer menu items
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        when (item.itemId) {
+            R.id.nav_term -> {
+                // Handle the home action, for example, navigating to the main screen
+                Toast.makeText(this, "Term clicked", Toast.LENGTH_SHORT).show()
+            }
+
+            // Add more cases for other menu items as needed
+        }
+        // Close the navigation drawer
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
 }
