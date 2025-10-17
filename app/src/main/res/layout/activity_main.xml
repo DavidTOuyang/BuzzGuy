@@ -11,7 +11,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="40dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/message_edit_text"
         />
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
-        android:layout_marginVertical="40dp"
+        android:layout_marginVertical="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:autofillHints="no"
         android:background="@drawable/rounded_corner"

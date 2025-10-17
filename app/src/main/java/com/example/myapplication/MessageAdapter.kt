@@ -1,48 +1,84 @@
 package com.example.myapplication
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.databinding.ChatItemBinding
+import com.example.myapplication.databinding.ChatReceivingViewBinding
+import com.example.myapplication.databinding.ChatSendingViewBinding
 
-class MessageAdapter(private val messageList: List<Message>) :
-    RecyclerView.Adapter<MessageAdapter.MyViewHolder>() {
+class MessageAdapter : ListAdapter<Message,
+        RecyclerView.ViewHolder>(MessageDiffCallback()) {
 
-    // 1. Update the ViewHolder to use the binding object
-    // It takes ChatItemBinding as a parameter instead of a raw View
-    class MyViewHolder(private val binding: ChatItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    companion object {
+        private const val VIEW_TYPE_SENT = 1
+        private const val VIEW_TYPE_RECEIVED = 2
+    }
 
-        fun bind(message: Message) {
-            if (message.sentBy == Message.SENT_BY_ME) {
-                binding.leftChatView.visibility = View.GONE
-                binding.rightChatView.visibility = View.VISIBLE
-                binding.rightChatTextView.text = message.messageContent
-            } else {
-                binding.rightChatView.visibility = View.GONE
-                binding.leftChatView.visibility = View.VISIBLE
-                binding.leftChatTextView.text = message.messageContent
-            }
+    // This method determines which layout (view type) to use for each item
+    override fun getItemViewType(position: Int): Int {
+        val message = getItem(position)
+        return if (message.sentBy == Message.SENT_BY_ME) {
+            VIEW_TYPE_SENT
+        } else {
+            VIEW_TYPE_RECEIVED
         }
     }
 
-    // 2. Inflate the layout using the binding class in onCreateViewHolder
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    // This method inflates the correct layout and creates the corresponding ViewHolder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        // Use the inflate method provided by the generated binding class
-        val binding = ChatItemBinding.inflate(inflater, parent, false)
-
-        return MyViewHolder(binding)
+        return when (viewType) {
+            VIEW_TYPE_SENT -> {
+                val binding = ChatSendingViewBinding.inflate(inflater, parent, false)
+                SentMessageViewHolder(binding)
+            }
+            VIEW_TYPE_RECEIVED -> {
+                val binding = ChatReceivingViewBinding.inflate(inflater, parent, false)
+                ReceivedMessageViewHolder(binding)
+            }
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
     }
 
-    // 3. Update onBindViewHolder to use the bind function we added to the ViewHolder
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val message = messageList[position]
-        holder.bind(message)
+    // This method binds the data to the correct ViewHolder based on its type
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val message = getItem(position)
+        when (holder) {
+            is SentMessageViewHolder -> holder.bind(message)
+            is ReceivedMessageViewHolder -> holder.bind(message)
+        }
     }
 
-    override fun getItemCount(): Int {
-        return messageList.size
+    // Separate ViewHolder for messages sent by the user
+    class SentMessageViewHolder(private val binding: ChatSendingViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message) {
+            // Bind the message content to the TextView in the sent message layout
+            binding.rightChatTextView.text = message.messageContent
+        }
+    }
+
+    // Separate ViewHolder for messages received from the bot
+    class ReceivedMessageViewHolder(private val binding: ChatReceivingViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message) {
+            // Bind the message content to the TextView in the received message layout
+            binding.leftChatTextView.text = message.messageContent
+        }
+    }
+
+    class MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
+        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
+            // Assuming 'timestamp' is a reliable, unique identifier for a message.
+            // For production, a unique message ID (e.g., from Firestore) is better.
+            return oldItem.timestamp == newItem.timestamp
+        }
+
+        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
+            // Compare the content fields to detect if the item's data has changed.
+            return oldItem == newItem
+        }
     }
 }

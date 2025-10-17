@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -9,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
 
@@ -21,19 +18,26 @@ import com.google.firebase.analytics.analytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
-
-import java.time.Instant
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.Timestamp
 
 // Tag for logging
 private const val TAG = "AnonymousAuth"
 
+// For safety concern
+private val auth: FirebaseAuth by lazy { Firebase.auth }
+private val fireDb: FirebaseFirestore by lazy { Firebase.firestore }
+
 class MainActivity (): AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val messageList: MutableList<Message> = mutableListOf()
     private lateinit var myMessageAdapter: MessageAdapter
     private lateinit var analytics: FirebaseAnalytics
-    private lateinit var auth: FirebaseAuth     // Authentication
+    private var currentUserId: String? = null
+    private var firestoreListener: ListenerRegistration? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,35 +47,36 @@ class MainActivity (): AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize Firebase Auth
-        auth = Firebase.auth
-
         // setup recycler view
-        myMessageAdapter = MessageAdapter(messageList)
+        myMessageAdapter = MessageAdapter()
         binding.recyclerView.adapter = myMessageAdapter
         val llm = LinearLayoutManager(this)
-        llm.stackFromEnd = true
         binding.recyclerView.layoutManager = llm
 
         binding.sendButton.setOnClickListener {
             val question = binding.messageEditText.text.toString().trim()
-            if (question.isNotEmpty()) {
-                val nowInstant = Instant.now()
-                addToChat(question, Message.SENT_BY_ME, nowInstant.toEpochMilli())
+            val userId = auth.currentUser?.uid ?: ""
+
+            if (question.isNotEmpty() && userId.isNotEmpty()) {
+                addMessageToFirestore(userId, question, Message.SENT_BY_ME)
                 binding.messageEditText.setText("")
                 binding.welcomeText.visibility = View.GONE
-
-                // to Firestore API
             }
         }
     }
-
 
     override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         updateUI(currentUser)
+    }
+
+    // Detach Firestore listener to prevent memory leaks
+    override fun onStop() {
+        super.onStop()
+        // preventing memory leak
+        firestoreListener?.remove()
     }
 
     private fun signInAnonymously() {
@@ -97,20 +102,77 @@ class MainActivity (): AppCompatActivity() {
             // User is signed in. You can now access their UID: user.uid
             Log.d(TAG, "User UID: ${user.uid}")
             // Proceed with chatbot logic, fetch chat history from Firestore using this UID
-            // Example: fetchChatHistory(user.uid)
+            currentUserId = user.uid
+            fetchLatestMessages(currentUserId)
         } else {
             // No user is signed in, sign them in anonymously
             signInAnonymously()
         }
     }
 
-    // method that adds a new chat
-    fun addToChat(message: String, sentBy: String, timeStamp: Long) {
-        runOnUiThread {
-            messageList.add(Message(message, sentBy, timeStamp))
-            val newItemPosition = myMessageAdapter.itemCount
-            myMessageAdapter.notifyItemInserted(newItemPosition)
-            binding.recyclerView.smoothScrollToPosition(newItemPosition)
+    private fun fetchLatestMessages(userId: String?) {
+        if (userId == null) {
+            Log.e(TAG, "Cannot fetch messages: user ID is null.")
+            return
         }
+
+        val chatRef = fireDb.collection("users")
+            .document(userId).collection("chats")
+
+        chatRef.orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(20).addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.e(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshots != null && !snapshots.isEmpty) {
+                    // Clear the list and add new messages to avoid duplicates.
+                    binding.messageEditText.setText("")
+                    binding.welcomeText.visibility = View.GONE
+
+                    // Map documents to Message objects
+                    val newMessages = snapshots.documents.mapNotNull {
+                        it.toObject(Message::class.java)
+                    }
+
+                    // Reverse the list so the oldest of the 20 messages is first
+                    val reversedMessages = newMessages.reversed()
+
+                    // Submit the new list to the adapter for DiffUtil to handle.
+                    myMessageAdapter.submitList(reversedMessages) {
+                        binding.recyclerView.smoothScrollToPosition(reversedMessages.size - 1)
+                    }
+                } else {
+                    Log.d(TAG, "Current chat is empty.")
+                }
+            }
+    }
+
+    // method that adds a new chat
+    fun addMessageToFirestore(userId: String, message: String, sentBy: String) {
+        val chatRef = fireDb.collection("users")
+            .document(userId).collection("chats")
+
+        val messageData = Message(
+            message,
+            sentBy,
+            Timestamp.now()
+        )
+
+//            messageList.add(messageInput)
+//            val newItemPosition = myMessageAdapter.itemCount
+//            myMessageAdapter.notifyItemInserted(newItemPosition)
+//            binding.recyclerView.smoothScrollToPosition(newItemPosition)
+
+        // send the message directly to Firestore
+        chatRef.add(messageData)
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding document", e)
+                Toast.makeText(this, "Failed to send message.", Toast.LENGTH_SHORT).show()
+            }
     }
 }
