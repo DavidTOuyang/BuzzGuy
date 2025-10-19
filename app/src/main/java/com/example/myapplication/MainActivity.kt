@@ -1,4 +1,5 @@
 package com.example.myapplication
+import com.example.myapplication.GenerativeAIHelper
 
 import android.os.Bundle
 import android.util.Log
@@ -28,6 +29,7 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.Timestamp
+import com.google.firebase.ai.GenerativeModel
 
 // Tag for logging
 private const val TAG = "AnonymousAuth"
@@ -35,6 +37,10 @@ private const val TAG = "AnonymousAuth"
 // For safety concern
 private val auth: FirebaseAuth by lazy { Firebase.auth }
 private val fireDb: FirebaseFirestore by lazy { Firebase.firestore }
+
+private val generativeModel: GenerativeModel by lazy {
+    GenerativeAIHelper.generativeModel
+}
 
 class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -48,6 +54,7 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         analytics = Firebase.analytics
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -1,0 +1,76 @@
+package com.example.myapplication
+
+import com.google.firebase.Firebase
+import com.google.firebase.ai.GenerativeModel
+import com.google.firebase.ai.ai
+import com.google.firebase.ai.type.GenerativeBackend
+import com.google.firebase.ai.type.HarmBlockThreshold
+import com.google.firebase.ai.type.HarmCategory
+import com.google.firebase.ai.type.SafetySetting
+import com.google.firebase.ai.type.content
+import com.google.firebase.ai.type.generationConfig
+
+object GenerativeAIHelper {
+
+    // Gemini API input configuration.
+    private val config = generationConfig {
+        // Limits the output to a single response, which is standard for a turn-based chatbot.
+        candidateCount = 1
+
+        // A moderate temperature for balanced creativity and coherence.
+        // Lower temperatures (e.g., 0.2-0.6) are good for factual, consistent answers.
+        // A slightly higher temperature (e.g., 0.7-1.0) can provide more creative and empathetic conversation.
+        temperature = 0.8F
+
+        // Use a value below 1.0 to ensure the model focuses on the most probable tokens,
+        // which helps maintain topic relevance.
+        topP = 0.9F
+
+        // Adjust the max output tokens to allow for more complete and thoughtful responses.
+        // 500-1000 is a good range for a conversational agent.
+        maxOutputTokens = 500
+
+        // Set a moderate frequency penalty to prevent repetition without making responses sound unnatural.
+        frequencyPenalty = 1.0F
+
+        // Set a moderate presence penalty to encourage the introduction of new concepts,
+        // which keeps the conversation fresh.
+        presencePenalty = 1.0F
+
+        // It defines the maximum number of most-likely tokens to consider at
+        // each step of the generation process.
+        topK = 15
+    }
+
+    // Gemini API input safety setting - restriction level 3 on a scale of 1 to 4.
+    private val safety = listOf(
+        SafetySetting(HarmCategory.HARASSMENT, HarmBlockThreshold.MEDIUM_AND_ABOVE),
+        SafetySetting(HarmCategory.DANGEROUS_CONTENT, HarmBlockThreshold.MEDIUM_AND_ABOVE),
+        SafetySetting(HarmCategory.HATE_SPEECH, HarmBlockThreshold.MEDIUM_AND_ABOVE),
+        SafetySetting(HarmCategory.SEXUALLY_EXPLICIT, HarmBlockThreshold.MEDIUM_AND_ABOVE),
+    )
+
+    //
+    private val chatbotSystemInstruction = content {
+        text("You are 'Motivator', an empathetic and knowledgeable AI assistant for students.")
+        text("Your primary goal is to enhance the user's academic motivation, improve well-being, and provide practical study strategies.")
+        text("Maintain a consistently positive, encouraging, and supportive tone. Frame advice in a non-judgmental and proactive manner.")
+        text("Focus on providing actionable guidance, such as time management techniques, stress reduction tips, and effective study methods.")
+        text("When a user expresses feelings of stress or anxiety, offer empathetic support and positive framing before suggesting solutions.")
+        text("You must absolutely not provide any medical or psychiatric advice, diagnose any conditions, or offer professional-level therapy.")
+        text("If a user's message indicates severe distress or potential for self-harm, respond with a pre-scripted message encouraging them to seek professional help immediately.")
+        text("Here is the pre-scripted message for crisis situations:")
+        text("“It sounds like you are going through a really difficult time, and your safety is the most important thing. I cannot offer medical advice, but there are people who can help you right now. Please reach out to a professional mental health hotline or service. Your well-being matters.”")
+        text("Do not discuss or respond to prompts that involve inappropriate, hateful, or dangerous topics, and avoid political or controversial subjects.")
+    }
+
+    val generativeModel: GenerativeModel by lazy {
+        Firebase.ai(backend = GenerativeBackend.googleAI())
+            .generativeModel(
+                "gemini-2.5-flash-lite",
+                generationConfig = config,
+                safetySettings = safety,
+                systemInstruction = chatbotSystemInstruction
+                )
+    }
+}
