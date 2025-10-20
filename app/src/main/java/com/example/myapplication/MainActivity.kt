@@ -1,5 +1,6 @@
 package com.example.myapplication
-import com.example.myapplication.GenerativeAIHelper
+
+import com.example.myapplication.viewmodel.ChatViewModel
 
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
+import androidx.activity.viewModels
 
 // Firebase packages
 import com.google.firebase.Firebase
@@ -29,7 +31,7 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.Timestamp
-import com.google.firebase.ai.GenerativeModel
+
 
 // Tag for logging
 private const val TAG = "AnonymousAuth"
@@ -37,10 +39,6 @@ private const val TAG = "AnonymousAuth"
 // For safety concern
 private val auth: FirebaseAuth by lazy { Firebase.auth }
 private val fireDb: FirebaseFirestore by lazy { Firebase.firestore }
-
-private val generativeModel: GenerativeModel by lazy {
-    GenerativeAIHelper.generativeModel
-}
 
 class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -50,6 +48,7 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private var currentUserId: String? = null
     private var firestoreListener: ListenerRegistration? = null
     private lateinit var drawerLayout: DrawerLayout
+    private val myAIModel: ChatViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,9 +103,20 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
             val userId = auth.currentUser?.uid ?: ""
 
             if (question.isNotEmpty() && userId.isNotEmpty()) {
+                myAIModel.generateContent(question)
                 addMessageToFirestore(userId, question, Message.SENT_BY_ME)
                 binding.messageEditText.setText("")
-                binding.welcomeText.visibility = View.GONE
+            }
+        }
+
+        // Observe the LiveData for changes
+        myAIModel.chatResponse.observe(this) { aiResponse ->
+            aiResponse?.let { message ->
+                addMessageToFirestore(
+                    auth.currentUser?.uid ?: "",
+                    message.messageContent,
+                    Message.SENT_BY_BOT
+                )
             }
         }
     }
@@ -174,7 +184,6 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
                 if (snapshots != null && !snapshots.isEmpty) {
                     // Clear the list and add new messages to avoid duplicates.
-                    binding.messageEditText.setText("")
                     binding.welcomeText.visibility = View.GONE
 
                     // Map documents to Message objects

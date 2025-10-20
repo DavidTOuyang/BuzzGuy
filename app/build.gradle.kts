@@ -60,6 +60,9 @@ dependencies {
     implementation(libs.google.material)
     implementation(libs.firebase.ai)
     implementation(libs.generativeai)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.activity.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
