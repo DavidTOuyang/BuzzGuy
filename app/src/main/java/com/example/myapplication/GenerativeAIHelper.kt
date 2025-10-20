@@ -31,11 +31,13 @@ object GenerativeAIHelper {
         maxOutputTokens = 1000
 
         // Set a moderate frequency penalty to prevent repetition without making responses sound unnatural.
-//        frequencyPenalty = 1.4F
+        // Flash and Flash-Light don't support this parameter.
+        // frequencyPenalty = 1.4F
 
         // Set a moderate presence penalty to encourage the introduction of new concepts,
         // which keeps the conversation fresh.
-//        presencePenalty = 0.5F
+        // Flash and Flash-Light don't support this parameter.
+        // presencePenalty = 0.5F
 
         // It defines the maximum number of most-likely tokens to consider at
         // each step of the generation process.
