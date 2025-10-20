@@ -9,16 +9,18 @@
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/logo_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher_round" />
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@string/description_new_chat"
+        android:background="@null"
+        android:src="@drawable/new_chat" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
-        android:text="@string/app_name"
+        android:text="@string/refresh"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 </LinearLayout>
