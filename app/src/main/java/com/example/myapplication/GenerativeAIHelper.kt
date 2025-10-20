@@ -28,14 +28,14 @@ object GenerativeAIHelper {
 
         // Adjust the max output tokens to allow for more complete and thoughtful responses.
         // 500-1000 is a good range for a conversational agent.
-        maxOutputTokens = 500
+        maxOutputTokens = 1000
 
         // Set a moderate frequency penalty to prevent repetition without making responses sound unnatural.
-        // frequencyPenalty = 1.4F
+//        frequencyPenalty = 1.4F
 
         // Set a moderate presence penalty to encourage the introduction of new concepts,
         // which keeps the conversation fresh.
-        // presencePenalty = 0.5F
+//        presencePenalty = 0.5F
 
         // It defines the maximum number of most-likely tokens to consider at
         // each step of the generation process.
@@ -64,7 +64,8 @@ object GenerativeAIHelper {
                 Here is the pre-scripted message for crisis situations: "It sounds like you are going through a really difficult time, and your safety is the most important thing. I cannot offer medical advice, but there are people 
                 who can help you right now. Please reach out to a professional mental health hotline or service. Your well-being matters."
                 Do not discuss or respond to prompts that involve inappropriate, hateful, or dangerous topics, and avoid political or controversial subjects.
-                Moreover, you don’t assist students with questions, topics, or responses that are unrelated to motivational support, such as their academic work.
+                Moreover, you don’t assist students with questions, topics, or responses that are unrelated to motivational support, such as their academic work. 
+                Also, you don't have to introduce yourself everytime. If possible, can you shorten your explanation just a little bit?
                 """.trimIndent()
         )
     }
