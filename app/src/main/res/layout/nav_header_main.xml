@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:id="@+id/nav_header_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/nav_header_button"
     android:background="?attr/colorPrimary"
     android:clickable="true"
     android:focusable="true"
@@ -12,12 +12,11 @@
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageButton
+    <ImageView
         android:id="@+id/logo_image_view"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:contentDescription="@string/description_new_chat"
-        android:layout_gravity="bottom"
         android:background="@null"
         android:clickable="false"
         android:focusable="false"
@@ -26,10 +25,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/logo_explanation"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
         android:text="@string/refresh"
-        android:layout_gravity="bottom"
         android:textSize="18sp"
         android:clickable="false"
         android:focusable="false"

@@ -1,7 +1,5 @@
 package com.example.myapplication
 
-import com.example.myapplication.viewmodel.ChatViewModel
-
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -18,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import androidx.activity.viewModels
+import com.example.myapplication.viewmodel.ChatViewModel
 
 // Firebase packages
 import com.google.firebase.Firebase
@@ -31,7 +30,6 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.Timestamp
-
 
 // Tag for logging
 private const val TAG = "AnonymousAuth"
@@ -98,6 +96,7 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val llm = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = llm
 
+        // Clicking the send button.
         binding.sendButton.setOnClickListener {
             val question = binding.messageEditText.text.toString().trim()
             val userId = auth.currentUser?.uid ?: ""
@@ -118,6 +117,44 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
                     Message.SENT_BY_BOT
                 )
             }
+        }
+    }
+
+    // This function will clear the Firestore dialogues.
+    fun clearChats() {
+        val userId = auth.currentUser?.uid ?: ""
+        if (userId.isEmpty()) {
+            Log.e("ClearChats", "Error: User not authenticated.")
+            return
+        }
+        val chatRef = fireDb.collection("users")
+            .document(userId).collection("chats")
+
+        // Retrieve all documents in the chats subcollection
+        chatRef.get().addOnSuccessListener { querySnapshot ->
+            if (querySnapshot.isEmpty) {
+                Log.d("ClearChats", "No chat dialogues to clear for user $userId.")
+                return@addOnSuccessListener
+            }
+
+            // Create a new batched write operation
+            val batch = fireDb.batch()
+            for (document in querySnapshot.documents) {
+                // Add each document's delete operation to the batch
+                batch.delete(document.reference)
+            }
+
+            // Commit the batch
+            batch.commit()
+                .addOnSuccessListener {
+                    Log.d("ClearChats", "Successfully cleared all chat dialogues for user $userId.")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("ClearChats", "Error clearing chat dialogues", e)
+                }
+        }
+        .addOnFailureListener { e ->
+            Log.e("ClearChats", "Error getting documents for user $userId", e)
         }
     }
 
@@ -155,6 +192,7 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
+            myMessageAdapter.submitList(emptyList<Message>())
             // User is signed in. You can now access their UID: user.uid
             Log.d(TAG, "User UID: ${user.uid}")
             // Proceed with chatbot logic, fetch chat history from Firestore using this UID
@@ -230,6 +268,12 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
+            R.id.nav_new_chat -> {
+                clearChats()
+                myMessageAdapter.submitList(emptyList<Message>())
+                binding.messageEditText.setText("")
+                binding.welcomeText.visibility = View.VISIBLE
+            }
             R.id.nav_term -> {
                 // Handle the home action, for example, navigating to the main screen
                 Toast.makeText(this, "Term clicked", Toast.LENGTH_SHORT).show()

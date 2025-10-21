@@ -20,7 +20,7 @@ object GenerativeAIHelper {
         // A moderate temperature for balanced creativity and coherence.
         // Lower temperatures (e.g., 0.2-0.6) are good for factual, consistent answers.
         // A slightly higher temperature (e.g., 0.7-1.0) can provide more creative and empathetic conversation.
-        temperature = 0.8F
+        temperature = 1.0F
 
         // Use a value below 1.0 to ensure the model focuses on the most probable tokens,
         // which helps maintain topic relevance.
@@ -67,7 +67,7 @@ object GenerativeAIHelper {
                 who can help you right now. Please reach out to a professional mental health hotline or service. Your well-being matters."
                 Do not discuss or respond to prompts that involve inappropriate, hateful, or dangerous topics, and avoid political or controversial subjects.
                 Moreover, you don’t assist students with questions, topics, or responses that are unrelated to motivational support, such as their academic work. 
-                Also, you don't have to introduce yourself everytime. If possible, can you shorten your explanation just a little bit?
+                 Also, you don’t have to introduce yourself everytime. If possible, can you shorten your explanation just a little bit? Do not repeat your name or introduction in subsequent replies after the initial greeting.
                 """.trimIndent()
         )
     }
