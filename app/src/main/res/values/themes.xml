@@ -4,6 +4,10 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
+    <style name="CustomTextStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:color">@color/black</item>
+    </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
 </resources>

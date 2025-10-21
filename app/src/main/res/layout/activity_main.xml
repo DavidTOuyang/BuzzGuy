@@ -38,6 +38,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/app_name"
                         android:textSize="25sp"
+                        android:layout_marginBottom="2dp"
                         android:includeFontPadding="false"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -112,6 +113,7 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer"
         app:itemIconTint="@color/white"
+        app:itemTextAppearance="@style/CustomTextStyle"
         />
 
 </androidx.drawerlayout.widget.DrawerLayout>
