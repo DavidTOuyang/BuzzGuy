@@ -267,6 +267,10 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
     // Handle clicks on the navigation drawer menu items
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
+
+        // Variable to hold the action we want to perform
+        var postDrawerCloseAction: (() -> Unit)? = null
+
         when (item.itemId) {
             R.id.nav_new_chat -> {
                 clearChats()
@@ -276,14 +280,42 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 Toast.makeText(this, "New chat clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_term -> {
-                // Handle the home action, for example, navigating to the main screen
+                postDrawerCloseAction = {
+                    showContentDialog("Terms and Conditions", "This is a sample text for the terms and conditions.")
+                }
                 Toast.makeText(this, "Term clicked", Toast.LENGTH_SHORT).show()
+            }
+            R.id.nav_policy -> {
+                postDrawerCloseAction = {
+                    showContentDialog("Privacy Policy", "This is a sample text for the privacy policy.")
+                }
+                Toast.makeText(this, "Privacy Policy clicked", Toast.LENGTH_SHORT).show()
             }
 
             // Add more cases for other menu items as needed
         }
         // Close the navigation drawer
         drawerLayout.closeDrawer(GravityCompat.START)
+
+        if (postDrawerCloseAction != null) {
+            drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+                override fun onDrawerClosed(drawerView: View) {
+                    // Execute the action we stored earlier
+                    postDrawerCloseAction.invoke()
+                    // Remove the listener to avoid memory leaks
+                    drawerLayout.removeDrawerListener(this)
+                }
+                // Other methods are empty as before
+                override fun onDrawerOpened(drawerView: View) {}
+                override fun onDrawerStateChanged(newState: Int) {}
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            })
+        }
         return true
+    }
+
+    private fun showContentDialog(title: String, content: String) {
+        val bottomSheetDialog = ContentBottomSheetDialog.newInstance("Hello", "Hi")
+        bottomSheetDialog.show(supportFragmentManager, bottomSheetDialog.tag)
     }
 }

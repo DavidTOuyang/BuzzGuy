@@ -4,6 +4,7 @@
     <string name="welcome_placeholder">Welcome to the\n well-being chatbot</string>
     <string name="description_send_button">Send message</string>
     <string name="term">Term of Use</string>
+    <string name="policy">Private Policy</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="refresh">New Chat</string>
