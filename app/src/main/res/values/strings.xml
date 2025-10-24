@@ -10,4 +10,9 @@
     <string name="closing">Done</string>
     <string name="refresh">New Chat</string>
     <string name="description_new_chat">Icon for a new session</string>
+
+    <string name="term_title">Term of Use</string>
+    <string name="term_content">Term of Use temp</string>
+    <string name="policy_title">Private Policy</string>
+    <string name="policy_content">Private Policy temp</string>
 </resources>

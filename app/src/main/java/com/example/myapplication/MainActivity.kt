@@ -270,6 +270,8 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
         // Variable to hold the action we want to perform
         var postDrawerCloseAction: (() -> Unit)? = null
+        val title: String
+        val content: String
 
         when (item.itemId) {
             R.id.nav_new_chat -> {
@@ -280,14 +282,18 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 Toast.makeText(this, "New chat clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_term -> {
+                title = getString(R.string.term_title)
+                content = getString(R.string.term_content)
                 postDrawerCloseAction = {
-                    showContentDialog("Terms and Conditions", "This is a sample text for the terms and conditions.")
+                    showContentDialog(title, content)
                 }
                 Toast.makeText(this, "Term clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_policy -> {
+                title = getString(R.string.policy_title)
+                content = getString(R.string.policy_content)
                 postDrawerCloseAction = {
-                    showContentDialog("Privacy Policy", "This is a sample text for the privacy policy.")
+                    showContentDialog(title, content)
                 }
                 Toast.makeText(this, "Privacy Policy clicked", Toast.LENGTH_SHORT).show()
             }
@@ -315,7 +321,7 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun showContentDialog(title: String, content: String) {
-        val bottomSheetDialog = ContentBottomSheetDialog.newInstance("Hello", "Hi")
+        val bottomSheetDialog = ContentBottomSheetDialog.newInstance(title, content)
         bottomSheetDialog.show(supportFragmentManager, bottomSheetDialog.tag)
     }
 }

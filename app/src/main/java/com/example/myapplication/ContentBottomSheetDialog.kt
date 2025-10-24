@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.myapplication.databinding.ContentDialogBinding
@@ -78,16 +77,14 @@ class ContentBottomSheetDialog : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        val titleTextView: TextView = view.findViewById(R.id.content_dialog_title)
-//        val contentTextView: TextView = view.findViewById(R.id.content_dialog_text)
 
         // Retrieve arguments from the bundle
         val title = arguments?.getString(ARG_TITLE) ?: "Default Title"
         val contentText = arguments?.getString(ARG_CONTENT_TEXT) ?: "No content available."
 
-//        // Set the content based on the arguments
-//        binding.contentDialogTitle.text = title
-//        binding.contentDialogText.text = contentText
+        // Set the content based on the arguments
+        binding.dialogTitle.text = title
+        binding.dialogContent.text = contentText
 
         binding.closeButton.setOnClickListener {
             // Get the BottomSheetBehavior
