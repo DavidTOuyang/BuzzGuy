@@ -7,6 +7,7 @@
     <string name="policy">Private Policy</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="closing">Done</string>
     <string name="refresh">New Chat</string>
     <string name="description_new_chat">Icon for a new session</string>
 </resources>
