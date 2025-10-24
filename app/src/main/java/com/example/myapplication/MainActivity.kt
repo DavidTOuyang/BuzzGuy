@@ -273,6 +273,7 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 myMessageAdapter.submitList(emptyList<Message>())
                 binding.messageEditText.setText("")
                 binding.welcomeText.visibility = View.VISIBLE
+                Toast.makeText(this, "New chat clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_term -> {
                 // Handle the home action, for example, navigating to the main screen
