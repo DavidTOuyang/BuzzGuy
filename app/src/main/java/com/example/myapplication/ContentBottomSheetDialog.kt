@@ -1,10 +1,11 @@
 package com.example.myapplication
 
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.style.BulletSpan
+import android.text.style.LeadingMarginSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,6 +96,8 @@ class ContentBottomSheetDialog : BottomSheetDialogFragment() {
 
         // Build the content dynamically using SpannableStringBuilder
         val spannableBuilder = SpannableStringBuilder()
+        val bulletIndent = 48 // Example: 48 pixels
+        val bulletGapWidth = 16 // The gap between the bullet and the text
 
         contentItems.forEach { item ->
             when (item) {
@@ -105,14 +108,24 @@ class ContentBottomSheetDialog : BottomSheetDialogFragment() {
                 is ContentItem.BulletList -> {
                     item.items.forEach { bulletText ->
                         val start = spannableBuilder.length
-                        spannableBuilder.append(bulletText).append("\n")
+                        spannableBuilder.append(bulletText).append("\n\n")
                         val end = spannableBuilder.length
-                        // Add conditional check for API level for BulletSpan
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            spannableBuilder.setSpan(BulletSpan(16), start, end, 0)
-                        } else {
-                            spannableBuilder.setSpan(BulletSpan(16), start, end, 0)
-                        }
+
+                        // Apply the indentation for the entire paragraph, including the bullet.
+                        spannableBuilder.setSpan(
+                            LeadingMarginSpan.Standard(bulletIndent, 0),
+                            start,
+                            end,
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        // Apply the BulletSpan with the desired gap.
+                        spannableBuilder.setSpan(
+                            BulletSpan(bulletGapWidth),
+                            start,
+                            end,
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
                     }
                     spannableBuilder.append("\n")
                 }
