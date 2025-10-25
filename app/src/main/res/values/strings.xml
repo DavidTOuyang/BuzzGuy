@@ -12,7 +12,7 @@
     <string name="description_new_chat">Icon for a new session</string>
 
     <string name="term_title">Term of Use</string>
-    <string name="term_content">
+    <string name="term_content_part_1">
         <![CDATA[
         <p><b>Last updated: October 25, 2025</b></p>
         <br>
@@ -24,10 +24,14 @@
         <p><b>Rule of Use</b></p>
         <p>By using BuzzGuy, you agree to use the app ethically and responsibly.</p>
         <p>You must not:</p>
-        <ul>
-            <li>Attempt to exploit, hack, or disrupt the service.</li>
-            <li>Submit content that is illegal, offensive, or violates the rights of others (including copyright or intellectual property).</li>
-        </ul>
+        ]]>
+    </string>
+    <string-array name="terms_bullets">
+        <item>Attempting to exploit, hack, or disrupt the service is strictly prohibited.</item>
+        <item>Submitting content that is illegal, offensive, or violates the rights of others is forbidden.</item>
+    </string-array>
+    <string name="term_content_part_2">
+        <![CDATA[
         <p>BuzzGuy is not intended for use in any situation requiring professional, medical, or psychological advice.</p>
         <br>
 

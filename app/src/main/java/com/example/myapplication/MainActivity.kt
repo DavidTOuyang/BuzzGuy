@@ -264,63 +264,70 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
     }
 
-    // Handle clicks on the navigation drawer menu items
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
+    private fun buildTermContent(): List<ContentItem> {
+        val contentList = mutableListOf<ContentItem>()
+        contentList.add(ContentItem.Paragraph(getString(R.string.term_content_part_1)))
+        val bulletItems = resources.getStringArray(R.array.terms_bullets)
+        contentList.add(ContentItem.BulletList(bulletItems.toList()))
+        contentList.add(ContentItem.Paragraph(getString(R.string.term_content_part_2)))
+        return contentList
+    }
 
-        // Variable to hold the action we want to perform
-        var postDrawerCloseAction: (() -> Unit)? = null
-        val title: String
-        val content: String
+    // Map a menu item to a specific DrawerAction
+    private fun mapMenuItemToAction(item: MenuItem): DrawerAction? {
+        return when (item.itemId) {
+            R.id.nav_new_chat -> DrawerAction.NewChat
+            R.id.nav_term -> {
+                val title = getString(R.string.term_title)
+                val content = buildTermContent()
+                DrawerAction.ShowContent(title, content)
+            }
+            R.id.nav_policy -> {
+                val title = getString(R.string.policy_title)
+                val content = listOf(ContentItem.Paragraph(getString(R.string.policy_content)))
+                DrawerAction.ShowContent(title, content)
+            }
+            else -> null
+        }
+    }
 
-        when (item.itemId) {
-            R.id.nav_new_chat -> {
+    // Handle the logic for each DrawerAction
+    private fun handleDrawerAction(action: DrawerAction) {
+        when (action) {
+            is DrawerAction.NewChat -> {
                 clearChats()
                 myMessageAdapter.submitList(emptyList<Message>())
                 binding.messageEditText.setText("")
                 binding.welcomeText.visibility = View.VISIBLE
-                Toast.makeText(this, "New chat clicked", Toast.LENGTH_SHORT).show()
             }
-            R.id.nav_term -> {
-                title = getString(R.string.term_title)
-                content = getString(R.string.term_content)
-                postDrawerCloseAction = {
-                    showContentDialog(title, content)
+            is DrawerAction.ShowContent -> {
+                val postDrawerCloseAction = {
+                    showContentDialog(action.title, action.content)
                 }
-                Toast.makeText(this, "Term clicked", Toast.LENGTH_SHORT).show()
+                drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+                    override fun onDrawerClosed(drawerView: View) {
+                        postDrawerCloseAction.invoke()
+                        drawerLayout.removeDrawerListener(this)
+                    }
+                    override fun onDrawerOpened(drawerView: View) {}
+                    override fun onDrawerStateChanged(newState: Int) {}
+                    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+                })
             }
-            R.id.nav_policy -> {
-                title = getString(R.string.policy_title)
-                content = getString(R.string.policy_content)
-                postDrawerCloseAction = {
-                    showContentDialog(title, content)
-                }
-                Toast.makeText(this, "Privacy Policy clicked", Toast.LENGTH_SHORT).show()
-            }
-
-            // Add more cases for other menu items as needed
         }
-        // Close the navigation drawer
+    }
+
+    // Handle clicks on the navigation drawer menu items
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val action = mapMenuItemToAction(item)
+        if (action != null) {
+            handleDrawerAction(action)
+        }
         drawerLayout.closeDrawer(GravityCompat.START)
-
-        if (postDrawerCloseAction != null) {
-            drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-                override fun onDrawerClosed(drawerView: View) {
-                    // Execute the action we stored earlier
-                    postDrawerCloseAction.invoke()
-                    // Remove the listener to avoid memory leaks
-                    drawerLayout.removeDrawerListener(this)
-                }
-                // Other methods are empty as before
-                override fun onDrawerOpened(drawerView: View) {}
-                override fun onDrawerStateChanged(newState: Int) {}
-                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
-            })
-        }
         return true
     }
 
-    private fun showContentDialog(title: String, content: String) {
+    private fun showContentDialog(title: String, content: List<ContentItem>) {
         val bottomSheetDialog = ContentBottomSheetDialog.newInstance(title, content)
         bottomSheetDialog.show(supportFragmentManager, bottomSheetDialog.tag)
     }

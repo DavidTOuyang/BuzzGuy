@@ -1,11 +1,15 @@
 package com.example.myapplication
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.style.BulletSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.os.BundleCompat
 import androidx.core.text.HtmlCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.myapplication.databinding.ContentDialogBinding
@@ -15,12 +19,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 class ContentBottomSheetDialog : BottomSheetDialogFragment() {
     companion object {
         private const val ARG_TITLE = "title"
-        private const val ARG_CONTENT_TEXT = "content_text"
+        private const val ARG_CONTENT_ITEMS = "content_text"
 
-        fun newInstance(title: String, contentText: String): ContentBottomSheetDialog {
+        fun newInstance(title: String, contentItems: List<ContentItem>): ContentBottomSheetDialog {
             val args = Bundle().apply {
                 putString(ARG_TITLE, title)
-                putString(ARG_CONTENT_TEXT, contentText)
+                putParcelableArrayList(ARG_CONTENT_ITEMS, ArrayList(contentItems))
             }
             return ContentBottomSheetDialog().apply {
                 arguments = args
@@ -81,24 +85,43 @@ class ContentBottomSheetDialog : BottomSheetDialogFragment() {
 
         // Retrieve arguments from the bundle
         val title = arguments?.getString(ARG_TITLE) ?: "Default Title"
-        val contentText = arguments?.getString(ARG_CONTENT_TEXT) ?: "No content available."
+        // Use BundleCompat.getParcelableArrayList for modern, type-safe retrieval
+        val contentItems: List<ContentItem> = arguments?.let {
+            BundleCompat.getParcelableArrayList(it, ARG_CONTENT_ITEMS, ContentItem::class.java)
+        } ?: emptyList()
 
         // Set the content based on the arguments
         binding.dialogTitle.text = title
-        binding.dialogContent.text = HtmlCompat.fromHtml(contentText, HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+        // Build the content dynamically using SpannableStringBuilder
+        val spannableBuilder = SpannableStringBuilder()
+
+        contentItems.forEach { item ->
+            when (item) {
+                is ContentItem.Paragraph -> {
+                    val htmlText = HtmlCompat.fromHtml(item.text, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    spannableBuilder.append(htmlText)
+                }
+                is ContentItem.BulletList -> {
+                    item.items.forEach { bulletText ->
+                        val start = spannableBuilder.length
+                        spannableBuilder.append(bulletText).append("\n")
+                        val end = spannableBuilder.length
+                        // Add conditional check for API level for BulletSpan
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            spannableBuilder.setSpan(BulletSpan(16), start, end, 0)
+                        } else {
+                            spannableBuilder.setSpan(BulletSpan(16), start, end, 0)
+                        }
+                    }
+                    spannableBuilder.append("\n")
+                }
+            }
+        }
+        binding.dialogContent.text = spannableBuilder
 
         binding.closeButton.setOnClickListener {
-            // Get the BottomSheetBehavior
-            val bottomSheet = (dialog as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            if (bottomSheet != null) {
-                val behavior = BottomSheetBehavior.from(bottomSheet)
-
-                // Trigger the smooth animation by setting the state to HIDDEN
-                behavior.state = BottomSheetBehavior.STATE_HIDDEN
-            } else {
-                // As a fallback, call dismiss() directly if the behavior isn't found
-                dismiss()
-            }
+            dismiss() // Use dismiss() for BottomSheetDialogFragment
         }
     }
 }
