@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.text.HtmlCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.myapplication.databinding.ContentDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -84,7 +85,7 @@ class ContentBottomSheetDialog : BottomSheetDialogFragment() {
 
         // Set the content based on the arguments
         binding.dialogTitle.text = title
-        binding.dialogContent.text = contentText
+        binding.dialogContent.text = HtmlCompat.fromHtml(contentText, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
         binding.closeButton.setOnClickListener {
             // Get the BottomSheetBehavior
