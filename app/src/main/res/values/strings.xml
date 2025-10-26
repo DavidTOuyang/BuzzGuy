@@ -3,15 +3,13 @@
     <string name="write_me_hint">Please write here</string>
     <string name="welcome_placeholder">Welcome to the\n well-being chatbot</string>
     <string name="description_send_button">Send message</string>
-    <string name="term">Term of Use</string>
-    <string name="policy">Private Policy</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="closing">Done</string>
     <string name="refresh">New Chat</string>
     <string name="description_new_chat">Icon for a new session</string>
 
-    <string name="term_title">Term of Use</string>
+    <string name="term_title">Terms of Use</string>
     <string name="term_content_part_1">
         <![CDATA[
         <p><b>Last updated: October 25, 2025</b></p>

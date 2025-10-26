@@ -8,9 +8,9 @@
             android:title="@string/refresh" />
         <item
             android:id="@+id/nav_term"
-            android:title="@string/term" />
+            android:title="@string/term_title" />
         <item
             android:id="@+id/nav_policy"
-            android:title="@string/policy" />
+            android:title="@string/policy_title" />
     </group>
 </menu>
