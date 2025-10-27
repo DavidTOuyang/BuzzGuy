@@ -16,7 +16,11 @@
         <br>
 
         <p><b>Introduction</b></p>
-        <p>BuzzGuy was developed as part of an educational project in the Georgia Tech Online Master of Science in Computer Science (OMSCS) program. The goal of this project is to support students’ academic motivation and promote well-being by providing a combination of open-ended and guided conversational responses. This app is provided for educational and research purposes only and is not an official Georgia Tech product.</p>
+        <p>
+            BuzzGuy was developed as part of an educational project in the Georgia Tech Online Master of Science in Computer Science (OMSCS) program.
+            The goal of this project is to support students’ academic motivation and promote well-being by providing a combination of open-ended and guided
+            conversational responses. This app is provided for educational and research purposes only and is not an official Georgia Tech product.
+        </p>
         <br>
 
         <p><b>Rule of Use</b></p>
@@ -34,11 +38,18 @@
         <br>
 
         <p><b>Intellectual Property</b></p>
-        <p>The source code, excluding third-party libraries or APIs, is licensed under the MIT License. All third-party components (such as Firebase services and the Gemini API) remain the property of their respective owners. Nothing in this document grants ownership of those third-party technologies.</p>
+        <p>
+            The source code, excluding third-party libraries or APIs, is licensed under the MIT License. All third-party components
+            (such as Firebase services and the Gemini API) remain the property of their respective owners. Nothing in this document grants ownership
+            of those third-party technologies.
+        </p>
         <br>
 
         <p><b>Disclaimer of Warranty</b></p>
-        <p>To the maximum extent permitted by law, the developer and contributors are not liable for any indirect, incidental, or consequential damage arising from the use of this app or its content.</p>
+        <p>
+            To the maximum extent permitted by law, the developer and contributors are not liable for any indirect,
+            incidental, or consequential damage arising from the use of this app or its content.
+        </p>
         <br>
         ]]>
     </string>
@@ -49,7 +60,10 @@
         <br>
 
         <p><b>Collected Data</b></p>
-        <p>BuzzGuy does not intend to collect and store personal data. However, some technical and usage data may be processed automatically through third-party services used by the app, such as:</p>
+        <p>
+            BuzzGuy does not intend to collect and store personal data. However, some technical and usage data may be processed
+            automatically through third-party services used by the app, such as:
+        </p>
         ]]>
     </string>
     <string-array name="policy_bullets_1">
@@ -84,12 +98,22 @@
     <string name="policy_content_part_4">
         <![CDATA[
         <p>Once deleted, this data cannot be recovered.</p>
-        <p>No personal information other than a temporary user ID is stored, and this ID is used only to manage chat sessions. All stored data is kept securely and is never shared, sold, or used for any other purpose.</p>
+        <p>
+            No personal information other than a temporary user ID is stored, and this ID is used only to manage chat sessions.
+            All stored data is kept securely and is never shared, sold, or used for any other purpose.
+        </p>
         <br>
 
         <p><b>Data Security</b></p>
-        <p>BuzzGuy uses Google Firebase’s built-in secure proxy to manage API communication and data storage. All chat messages and related data are transmitted through Firebase using encrypted HTTPS connections. This setup helps protect user data by keeping API credentials secure and preventing direct external access.</p>
-        <p>Firebase also provides data encryption and access control as part of Google Cloud’s standard security measures. While we take reasonable precautions to protect data, no method of transmission or storage can guarantee absolute security.</p>
+        <p>
+            BuzzGuy uses Google Firebase’s built-in secure proxy to manage API communication and data storage.
+            All chat messages and related data are transmitted through Firebase using encrypted HTTPS connections.
+            This setup helps protect user data by keeping API credentials secure and preventing direct external access.
+        </p>
+        <p>
+            Firebase also provides data encryption and access control as part of Google Cloud’s standard security measures.
+            While we take reasonable precautions to protect data, no method of transmission or storage can guarantee absolute security.
+        </p>
         <br>
 
         <p><b>Privacy Update</b></p>
@@ -98,7 +122,7 @@
         ]]>
     </string>
     <string-array name="policy_bullets_4">
-        <item>Within the app (on the Privacy Policy page)</item>
+        <item>Within the app (on the Privacy Policy page).</item>
         <item>On the project’s GitHub repository.</item>
     </string-array>
     <string name="policy_content_part_5">
@@ -112,7 +136,7 @@
         <p><b>Contact</b></p>
         <p>
             If you have any questions, concerns, or requests regarding this project, please contact the project team by sending an email to
-            <a href="mailto:Temp@gatech.edu">Temp@gatech.edu</a>.
+            <a href="mailto:Temp@gatech.edu">the project team</a>.
         </p>
         ]]>
     </string>
