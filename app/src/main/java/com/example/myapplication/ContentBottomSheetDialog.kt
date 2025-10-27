@@ -127,7 +127,6 @@ class ContentBottomSheetDialog : BottomSheetDialogFragment() {
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
                     }
-                    spannableBuilder.append("\n")
                 }
             }
         }

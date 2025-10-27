@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import com.example.myapplication.viewmodel.ChatViewModel
 
 // Firebase packages
@@ -270,6 +271,25 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val bulletItems = resources.getStringArray(R.array.terms_bullets)
         contentList.add(ContentItem.BulletList(bulletItems.toList()))
         contentList.add(ContentItem.Paragraph(getString(R.string.term_content_part_2)))
+        contentList.add(ContentItem.Paragraph(getString(R.string.contact)))
+        return contentList
+    }
+
+    private fun buildPolicyContent(): List<ContentItem> {
+        val policyContentPairs = listOf(
+            PolicyContentItemPair(R.string.policy_content_part_1, R.array.policy_bullets_1),
+            PolicyContentItemPair(R.string.policy_content_part_2, R.array.policy_bullets_2),
+            PolicyContentItemPair(R.string.policy_content_part_3, R.array.policy_bullets_3),
+            PolicyContentItemPair(R.string.policy_content_part_4, R.array.policy_bullets_4),
+        )
+        val contentList = mutableListOf<ContentItem>()
+        // Iterate over the statically defined list of resource IDs
+        for (pair in policyContentPairs) {
+            contentList.add(ContentItem.Paragraph(getString(pair.contentResId)))
+            contentList.add(ContentItem.BulletList(resources.getStringArray(pair.bulletResId).toList()))
+        }
+        contentList.add(ContentItem.Paragraph(getString(R.string.policy_content_part_5)))
+        contentList.add(ContentItem.Paragraph(getString(R.string.contact)))
         return contentList
     }
 
@@ -284,7 +304,7 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
             R.id.nav_policy -> {
                 val title = getString(R.string.policy_title)
-                val content = listOf(ContentItem.Paragraph(getString(R.string.policy_content)))
+                val content = buildPolicyContent()
                 DrawerAction.ShowContent(title, content)
             }
             else -> null

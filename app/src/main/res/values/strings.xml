@@ -40,12 +40,81 @@
         <p><b>Disclaimer of Warranty</b></p>
         <p>To the maximum extent permitted by law, the developer and contributors are not liable for any indirect, incidental, or consequential damage arising from the use of this app or its content.</p>
         <br>
-
-        <p><b>Contact</b></p>
-        <p>These Terms of Use may be updated periodically. The latest version will always be available through the app or its GitHub repository.</p>
         ]]>
     </string>
     <string name="policy_title">Private Policy</string>
-    <string name="policy_content">Private Policy temp</string>
+    <string name="policy_content_part_1">
+        <![CDATA[
+        <p><b>Last updated: Oct 27, 2025</b></p>
+        <br>
+
+        <p><b>Collected Data</b></p>
+        <p>BuzzGuy does not intend to collect and store personal data. However, some technical and usage data may be processed automatically through third-party services used by the app, such as:</p>
+        ]]>
+    </string>
+    <string-array name="policy_bullets_1">
+        <item>Firebase (Google Services): Used for analytics, crash reporting, and optional app functionality. Firebase may collect non-personal devices and usage data.</item>
+        <item>Gemini API (Google AI): Processes the text you input to generate chatbot responses. Your chat messages are sent securely to Google’s AI service for processing.</item>
+    </string-array>
+    <string name="policy_content_part_2">
+        <![CDATA[
+        <p>No user accounts or personally identifiable data (e.g., name, email, student ID) are collected or stored by the developer.</p>
+        <br>
+
+        <p><b>How Data Is Used</b></p>
+        <p>Any data processed through BuzzGuy is used solely to enable chatbot functionality and improve app performance. The developer does not analyze, share, or sell user data.</p>
+        <p>Third-party providers (Firebase and Gemini API) may use anonymized and aggregated data as described in their own privacy policies:</p>
+        ]]>
+    </string>
+    <string-array name="policy_bullets_2">
+        <item>Google Firebase Privacy &amp; Security</item>
+        <item>Google Privacy Policy</item>
+    </string-array>
+    <string name="policy_content_part_3">
+        <![CDATA[
+        <p><b>Data Storage and Retention</b></p>
+        <p>BuzzGuy temporarily stores user chat history to improve usability and allow users to view recent conversations.</p>
+        ]]>
+    </string>
+    <string-array name="policy_bullets_3">
+        <item>The app keeps up to the last 20 messages for each user.</item>
+        <item>Chat history and user identifiers are automatically deleted after 30 days of inactivity.</item>
+        <item>If the user uninstalls the app, the anonymous authentication linked to their session will be removed, and the associated chat history will also be permanently deleted.</item>
+    </string-array>
+    <string name="policy_content_part_4">
+        <![CDATA[
+        <p>Once deleted, this data cannot be recovered.</p>
+        <p>No personal information other than a temporary user ID is stored, and this ID is used only to manage chat sessions. All stored data is kept securely and is never shared, sold, or used for any other purpose.</p>
+        <br>
+
+        <p><b>Data Security</b></p>
+        <p>BuzzGuy uses Google Firebase’s built-in secure proxy to manage API communication and data storage. All chat messages and related data are transmitted through Firebase using encrypted HTTPS connections. This setup helps protect user data by keeping API credentials secure and preventing direct external access.</p>
+        <p>Firebase also provides data encryption and access control as part of Google Cloud’s standard security measures. While we take reasonable precautions to protect data, no method of transmission or storage can guarantee absolute security.</p>
+        <br>
+
+        <p><b>Privacy Update</b></p>
+        <p>This Privacy Policy may be updated from time to time.</p>
+        <p>The latest version will always be accessible:</p>
+        ]]>
+    </string>
+    <string-array name="policy_bullets_4">
+        <item>Within the app (on the Privacy Policy page)</item>
+        <item>On the project’s GitHub repository.</item>
+    </string-array>
+    <string name="policy_content_part_5">
+        <![CDATA[
+        <p>Continued use of the app after changes are published constitutes your acceptance of the updated policy.</p>
+        <br>
+        ]]>
+    </string>
+    <string name="contact">
+        <![CDATA[
+        <p><b>Contact</b></p>
+        <p>
+            If you have any questions, concerns, or requests regarding this project, please contact the project team by sending an email to
+            <a href="mailto:Temp@gatech.edu">Temp@gatech.edu</a>.
+        </p>
+        ]]>
+    </string>
     <string name="content_copyright">© 2025 Voynich3529\n Released under the MIT License</string>
 </resources>
