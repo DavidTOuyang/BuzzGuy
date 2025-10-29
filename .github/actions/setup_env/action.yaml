@@ -3,12 +3,7 @@ description: 'Checks out the code and sets up the specified Java version.'
 runs:
   using: "composite"
   steps:
-
-    # Step 1: Check out the repository code
-    - name: Checkout repository
-      uses: actions/checkout@v5
-
-    # Step 2: Set up the Java Development Kit (JDK)
+    # Set up the Java Development Kit (JDK)
     # 25 is the latest, but for stability concern, I decided to use the
     # Long-Term Support (LTS) version.
     # Eclipse Temurin is the mot recommended distributor, so I am using it.

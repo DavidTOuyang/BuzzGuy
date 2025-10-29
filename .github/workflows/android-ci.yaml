@@ -19,6 +19,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # The composite action for checkout and java
       - name: Setup environment
         uses: ./.github/actions/setup-env
 
@@ -31,7 +35,9 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      # The composite action for checkout and java
+      - name: Checkout repository
+      - uses: actions/checkout@v5
+
       - name: Setup environment
         uses: ./.github/actions/setup-env
 
@@ -45,6 +51,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+      - uses: actions/checkout@v5
+
       - name: Setup environment
         uses: ./.github/actions/setup-env
 
@@ -82,11 +91,6 @@ jobs:
 #          name: app-release
 #          path: app/build/outputs/bundle/release/app-release.aab
 
-#      - name: Upload debug APK
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: app-debug
-#          path: app/build/outputs/apk/debug/app-debug.apk
 
 
 
