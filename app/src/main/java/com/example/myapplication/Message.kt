@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import com.google.android.material.color.utilities.SchemeContent
 import com.google.firebase.Timestamp
 
 // primary constructor
