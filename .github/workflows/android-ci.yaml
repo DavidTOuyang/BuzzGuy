@@ -26,6 +26,10 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup-env
 
+      # Grant execute permission for the Gradle wrapper
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       # Add a step to run Android Lint
       - name: Run Android Lint
         run: ./gradlew lint
