@@ -25,6 +25,8 @@ jobs:
       # The composite action for checkout and java
       - name: Setup environment
         uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
       # Grant execute permission for the Gradle wrapper
       - name: Grant execute permission for gradlew
@@ -44,6 +46,8 @@ jobs:
 
       - name: Setup environment
         uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
       # Run the Unit Tests
       - name: Run Unit Tests
@@ -60,6 +64,8 @@ jobs:
 
       - name: Setup environment
         uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
       # Grant execute permission for the Gradle wrapper
       - name: Grant execute permission for gradlew

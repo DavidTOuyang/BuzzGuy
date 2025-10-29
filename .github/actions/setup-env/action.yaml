@@ -16,6 +16,6 @@ runs:
     # Retrieve the secret containing the Google Services JSON file
     - name: Create google-services.json from secret
       env:
-        GOOGLE_SERVICES_BASE64: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+        GOOGLE_SERVICES_BASE64: ${{ inputs.google_services_json }}
       run: echo "$GOOGLE_SERVICES_BASE64" | base64 --decode > app/google-services.json
       shell: bash
