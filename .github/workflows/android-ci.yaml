@@ -1,0 +1,92 @@
+# Name of the workflow as it appears in the Actions tab
+name: Android CI
+
+# Define the events that trigger the workflow
+on:
+  push:
+    branches:
+      - "main"
+      - "Iteration*"
+  pull_request:
+    branches:
+      - "main"
+      - "Iteration*"
+
+# A workflow is made up of one or more jobs
+jobs:
+
+  # Checking for the syntax of the entire source code
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+
+      # Add a step to run Android Lint
+      - name: Run Android Lint
+        run: ./gradlew lint
+
+  # Running all the tests
+  test:
+    needs: lint
+    run-on: ubuntu-latest
+    steps:
+      # The composite action for checkout and java
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+
+      # Run the Unit Tests
+      - name: Run Unit Tests
+        run: ./gradlew test
+
+      # Run the Instrument Tests
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+
+      # Grant execute permission for the Gradle wrapper
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # This step builds the AAB, the release
+      - name: Build release AAB
+        env:
+           KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_FILE" | base64 --decode > keystore.jks
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=keystore.jks \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+
+      # Uploads the AAB artifact with a 3-day retention period
+      - name: Upload release AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuzzGuy-release-aab
+          path: app/build/outputs/bundle/release/*.aab
+          retention-days: 3
+
+      # Step 6: Upload the generated APK as an artifact (or to Google Play)
+#      - name: Upload release AAB
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: app-release
+#          path: app/build/outputs/bundle/release/app-release.aab
+
+#      - name: Upload debug APK
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: app-debug
+#          path: app/build/outputs/apk/debug/app-debug.apk
+
+
+
