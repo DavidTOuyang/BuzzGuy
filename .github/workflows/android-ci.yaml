@@ -29,7 +29,7 @@ jobs:
   # Running all the tests
   test:
     needs: lint
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       # The composite action for checkout and java
       - name: Setup environment
