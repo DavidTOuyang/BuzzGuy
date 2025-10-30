@@ -3,10 +3,6 @@ description: 'Checks out the code and sets up the specified Java version.'
 runs:
   using: "composite"
   steps:
-    # Clone the GitHub Repository
-    - name: Checkout repository
-      uses: actions/checkout@v5
-
     # Set up the Java Development Kit (JDK)
     # 25 is the latest, but for stability concern, I decided to use the
     # Long-Term Support (LTS) version.

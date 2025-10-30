@@ -19,7 +19,11 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      # Run the composite action
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # The composite action for checkout and java
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
@@ -34,6 +38,9 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
@@ -49,6 +56,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
