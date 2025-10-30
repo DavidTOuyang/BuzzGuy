@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import androidx.activity.viewModels
-import androidx.annotation.StringRes
 import com.example.myapplication.viewmodel.ChatViewModel
 
 // Firebase packages
