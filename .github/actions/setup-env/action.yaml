@@ -1,5 +1,12 @@
 name: 'Setup Android Environment'
 description: 'Checks out the code and sets up the specified Java version.'
+
+# Getting the inputs from the workflow file
+inputs:
+  google_services_json:
+    description: 'The base64 encoded google-services.json file.'
+    required: true
+
 runs:
   using: "composite"
   steps:
