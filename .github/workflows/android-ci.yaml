@@ -64,15 +64,19 @@ jobs:
         with:
           google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
+      - name: Decode keystore
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+        run: |
+          echo "${KEYSTORE_FILE}" | base64 --decode > ${{ github.workspace }}/app/keystore.jks
+
       # This step builds the AAB, the release
       - name: Build release AAB
         env:
-           KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
            KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
            KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
            KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "$KEYSTORE_FILE" | base64 --decode > ${{ github.workspace }}/app/keystore.jks
           ./gradlew bundleRelease \
             -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
