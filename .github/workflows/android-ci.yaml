@@ -68,6 +68,7 @@ jobs:
           api-level: 35
           target: google_apis # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
+          timeout-minutes: 10 # Increase the timeout to 10 minutes (default is 6)
           script: ./gradlew connectedCheck
 
 
