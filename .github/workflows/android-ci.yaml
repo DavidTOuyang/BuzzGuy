@@ -19,18 +19,11 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      # The composite action for checkout and java
+      # Run the composite action
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
           google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
-
-      # Grant execute permission for the Gradle wrapper
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
 
       # Add a step to run Android Lint
       - name: Run Android Lint
@@ -41,9 +34,6 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
@@ -59,17 +49,10 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
           google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
-
-      # Grant execute permission for the Gradle wrapper
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
 
       # This step builds the AAB, the release
       - name: Build release AAB
