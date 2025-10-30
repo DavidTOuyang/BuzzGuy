@@ -69,8 +69,10 @@ jobs:
           target: google_apis # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           timeout-minutes: 15 # Increase the timeout to 10 minutes (default is 6)
-          script: ./gradlew connectedCheck
-
+          script: |
+            echo "Waiting for emulator to stabilize before running tests..."
+            sleep 15
+            ./gradlew connectedCheck
 
   build:
     needs: test
@@ -117,7 +119,3 @@ jobs:
 #        with:
 #          name: app-release
 #          path: app/build/outputs/bundle/release/app-release.aab
-
-
-
-
