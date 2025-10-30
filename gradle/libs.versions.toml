@@ -4,7 +4,7 @@ kotlin = "2.0.21"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
-espressoCore = "3.5.1"
+espressoCore = "3.7.0"
 appcompat = "1.6.1"
 material = "1.10.0"
 activity = "1.8.0"
@@ -20,6 +20,10 @@ lifecycleViewmodelKtx = "2.9.4"
 lifecycleLivedataKtx = "2.9.4"
 activityKtx = "1.11.0"
 junitJupiter = "5.8.1"
+rules = "1.7.0"
+runner = "1.7.0"
+coreKtxVersion = "1.7.0"
+espressoCoreVersion = "3.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +48,10 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+androidx-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCoreVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

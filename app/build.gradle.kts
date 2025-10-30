@@ -64,12 +64,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.activity.ktx)
-
+    implementation(libs.androidx.rules)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
+    androidTestImplementation(libs.androidx.rules)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.core.ktx)
+    androidTestImplementation(libs.espresso.core)
 }
