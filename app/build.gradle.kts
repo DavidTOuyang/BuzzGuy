@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.rules)
+    implementation(libs.androidx.core)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
 
@@ -72,6 +73,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.rules)
     androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.core.ktx)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.uiautomator)
+
 }

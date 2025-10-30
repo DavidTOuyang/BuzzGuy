@@ -9,6 +9,10 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import org.hamcrest.CoreMatchers.allOf
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Rule
@@ -18,6 +22,12 @@ class SendButtonInstrumentedTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
+
+    // To dismiss the system tips, you need to manually command it
+    @Before
+    fun setup() {
+        dismissSystemTips()
+    }
 
     @Test
     fun add_a_message_test() {
@@ -43,6 +53,21 @@ class SendButtonInstrumentedTest {
                 withText(testMessage),
                 isDisplayed()
             ))))
+    }
 
+    private fun dismissSystemTips() {
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
+        // The exact resource ID and description can vary by emulator and OS version.
+        // This is a common pattern for dismissing tips on Gboard.
+        val tipCloseButton = UiSelector()
+            .descriptionContains("dismiss") // Look for a button with a "dismiss" description
+            .className("android.widget.ImageView")
+
+        // Check if the dismiss button exists on the screen and click it.
+        // The `findObject` method waits for a short duration, making this robust.
+        if (device.findObject(tipCloseButton).exists()) {
+            device.findObject(tipCloseButton).click()
+        }
     }
 }

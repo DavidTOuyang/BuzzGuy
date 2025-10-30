@@ -24,6 +24,8 @@ rules = "1.7.0"
 runner = "1.7.0"
 coreKtxVersion = "1.7.0"
 espressoCoreVersion = "3.7.0"
+uiautomator = "2.4.0-alpha06"
+core = "1.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,8 +52,8 @@ androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", ve
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 androidx-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCoreVersion" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
