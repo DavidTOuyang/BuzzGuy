@@ -84,11 +84,10 @@ jobs:
           profile: Nexus 4
           emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
           script: |
-            echo "Restarting ADB server for a clean state..."
-            adb kill-server
-            adb start-server
-            echo "Waiting for emulator to stabilize before running tests..."
-            sleep 15
+            echo "Waiting briefly for services to spin up..."
+            sleep 5
+            # Connect explicitly to the emulator IP/port
+            adb connect localhost:5554
             adb wait-for-device
             adb shell input keyevent 82
             ./gradlew connectedAndroidTest --continue
