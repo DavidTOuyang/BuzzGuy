@@ -86,6 +86,8 @@ jobs:
             adb kill-server
             adb start-server
             echo "Waiting for emulator to stabilize before running tests..."
+            # adb commands can be placed here
+            adb shell input keyevent 82 # Unlocks the screen/sends 'Menu' key
             ./gradlew connectedCheck 
 
       # Upload Instrument Test results as an artifact
