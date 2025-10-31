@@ -63,10 +63,10 @@ jobs:
 
       # Run the Instrument Tests
       - name: Run Instrument Tests
-        uses: reactivecircus/android-emulator-runner@v2.34.0
+        uses: reactivecircus/android-emulator-runner@v2.3.0
         with:
           api-level: 30
-          target: google_apis # Ensures a stable, resource-efficient target
+          target: default # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           timeout-minutes: 15 # Increase the timeout to 10 minutes (default is 6)
           script: |
