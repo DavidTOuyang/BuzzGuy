@@ -114,9 +114,8 @@ jobs:
           retention-days: 3
 
   # Packaging the app for distribution
-
   build:
-    needs: test
+    needs: instrumented_test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
