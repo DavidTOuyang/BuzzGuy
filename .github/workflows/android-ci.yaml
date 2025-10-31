@@ -69,15 +69,8 @@ jobs:
           target: default # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           # Adjust ram-size to prevent resource starvation on the CI runner
-          ram-size: 2048M
           timeout-minutes: 15 # Increase the timeout to 10 minutes (default is 6)
-          script: |
-            echo "Restarting ADB server for a clean state..."
-            adb kill-server
-            adb start-server
-            echo "Waiting for emulator to stabilize before running tests..."
-            sleep 15
-            ./gradlew connectedCheck
+          script: ./gradlew connectedCheck
 
   build:
     needs: test
