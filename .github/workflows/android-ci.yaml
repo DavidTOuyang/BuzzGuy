@@ -81,9 +81,11 @@ jobs:
           # Adjust ram-size to prevent resource starvation on the CI runner
           ram-size: 1536M
           timeout-minutes: 15 # Increase the timeout to 10 minutes (default is 6)
-          # Disable animations explicitly in the action config
-          disable-animations: true
           script: |
+            echo "Restarting ADB server for a clean state..."
+            adb kill-server
+            adb start-server
+            echo "Waiting for emulator to stabilize before running tests..."
             # adb commands can be placed here
             adb shell input keyevent 82 # Unlocks the screen/sends 'Menu' key
             ./gradlew connectedCheck 
