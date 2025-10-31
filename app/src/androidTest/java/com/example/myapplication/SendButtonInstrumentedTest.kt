@@ -70,4 +70,6 @@ class SendButtonInstrumentedTest {
             device.findObject(tipCloseButton).click()
         }
     }
+
+
 }
