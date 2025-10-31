@@ -69,7 +69,6 @@ jobs:
           target: default # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           timeout-minutes: 15 # Increase the timeout to 10 minutes (default is 6)
-          emulator-options: -gpu swiftshader_indirect # Add this line
           script: |
             echo "Restarting ADB server for a clean state..."
             adb kill-server
