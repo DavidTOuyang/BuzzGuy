@@ -65,7 +65,7 @@ jobs:
       - name: Run Instrument Tests
         uses: reactivecircus/android-emulator-runner@v2.34.0
         with:
-          api-level: 36
+          api-level: 33
           target: default # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           # Adjust ram-size to prevent resource starvation on the CI runner
