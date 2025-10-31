@@ -76,8 +76,7 @@ jobs:
         with:
           api-level: 33
           # Use a smaller AOSP image for better performance
-          system-image: "system-images;android-33;aosp;x86_64"
-#          target: default # Ensures a stable, resource-efficient target
+          target: default # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           # Adjust ram-size to prevent resource starvation on the CI runner
           ram-size: 1536M
