@@ -36,7 +36,7 @@ jobs:
   # Running all the tests
   test:
     needs: lint
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -70,25 +70,23 @@ jobs:
          path: app/build/reports/tests/testDebugUnitTest/
          retention-days: 3
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       # Run the Instrument Tests
       - name: Run Instrument Tests
         uses: reactivecircus/android-emulator-runner@v2.34.0
         with:
-          api-level: 33
-          # Use a smaller AOSP image for better performance
+          api-level: 26
           target: default # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           # Adjust ram-size to prevent resource starvation on the CI runner
-          ram-size: 1536M
-          timeout-minutes: 15 # Increase the timeout to 10 minutes (default is 6)
+          profile: Nexus 4
+          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
           script: |
-            echo "Restarting ADB server for a clean state..."
-            adb kill-server
-            adb start-server
-            echo "Waiting for emulator to stabilize before running tests..."
-            # adb commands can be placed here
-            adb shell input keyevent 82 # Unlocks the screen/sends 'Menu' key
-            ./gradlew connectedCheck 
+            adb wait-for-device
+            adb shell input keyevent 82
+            ./gradlew connectedAndroidTest --continue
 
       # Upload Instrument Test results as an artifact
       - name: Upload Instrument Test Reports
