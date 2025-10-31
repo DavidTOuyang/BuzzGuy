@@ -34,9 +34,9 @@ jobs:
         run: ./gradlew lint
 
   # Running all the tests
-  test:
+  unit_test:
     needs: lint
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -70,8 +70,20 @@ jobs:
          path: app/build/test-results/testDebugUnitTest/
          retention-days: 3
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+  instrumented_test:
+    needs: unit_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
       # Run the Instrument Tests
       - name: Run Instrument Tests
@@ -81,15 +93,11 @@ jobs:
           target: google_apis # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           # Adjust ram-size to prevent resource starvation on the CI runner
-          profile: Nexus 4
-          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
+#          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
           script: |
-            echo "Waiting briefly for services to spin up..."
-            sleep 5
-            # Connect explicitly to the emulator IP/port
-            adb connect localhost:5554
             adb wait-for-device
             adb shell input keyevent 82
+            adb devices
             ./gradlew connectedAndroidTest --continue
 
       # Upload Instrument Test results as an artifact
