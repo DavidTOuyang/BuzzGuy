@@ -27,6 +27,7 @@ class SendButtonInstrumentedTest {
     @Before
     fun setup() {
         dismissSystemTips()
+        unlockDevice()
     }
 
     @Test
@@ -53,6 +54,18 @@ class SendButtonInstrumentedTest {
                 withText(testMessage),
                 isDisplayed()
             ))))
+    }
+
+    private fun unlockDevice() {
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        // Wake up the device if it is asleep
+        if (!device.isScreenOn) {
+            device.wakeUp()
+        }
+        // Swipe up to unlock (works for simple lock screens)
+        device.swipe(device.displayWidth / 2, device.displayHeight, device.displayWidth / 2, 0, 50)
+        // Send the Menu key event if the swipe doesn't work (older Android versions)
+        // device.pressMenu()
     }
 
     private fun dismissSystemTips() {

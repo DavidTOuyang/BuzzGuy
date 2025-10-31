@@ -61,6 +61,15 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew test
 
+      # Upload Unit Test results as an artifact
+      - name: Upload Unit Test Reports
+        uses: actions/upload-artifact@v4
+        if: always() # Upload even if tests fail
+        with:
+         name: unit-test-reports
+         path: app/build/reports/tests/testDebugUnitTest/
+         retention-days: 3
+
       # Run the Instrument Tests
       - name: Run Instrument Tests
         uses: reactivecircus/android-emulator-runner@v2.34.0
@@ -71,13 +80,18 @@ jobs:
           # Adjust ram-size to prevent resource starvation on the CI runner
           ram-size: 2048M
           timeout-minutes: 15 # Increase the timeout to 10 minutes (default is 6)
-          script: |
-            echo "Restarting ADB server for a clean state..."
-            adb kill-server
-            adb start-server
-            echo "Waiting for emulator to stabilize before running tests..."
-            sleep 180
-            ./gradlew connectedCheck
+          script: ./gradlew connectedCheck
+
+      # Upload Instrument Test results as an artifact
+      - name: Upload Instrument Test Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: instrument-test-reports
+          path: app/build/reports/androidTests/
+          retention-days: 3
+
+  # Packaging the app for distribution
 
   build:
     needs: test
