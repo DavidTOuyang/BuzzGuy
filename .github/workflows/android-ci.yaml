@@ -75,12 +75,19 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2.34.0
         with:
           api-level: 33
-          target: default # Ensures a stable, resource-efficient target
+          # Use a smaller AOSP image for better performance
+          system-image: "system-images;android-33;aosp;x86_64"
+#          target: default # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           # Adjust ram-size to prevent resource starvation on the CI runner
-          ram-size: 2048M
+          ram-size: 1536M
           timeout-minutes: 15 # Increase the timeout to 10 minutes (default is 6)
-          script: ./gradlew connectedCheck
+          # Disable animations explicitly in the action config
+          disable-animations: true
+          script: |
+            # adb commands can be placed here
+            adb shell input keyevent 82 # Unlocks the screen/sends 'Menu' key
+            ./gradlew connectedCheck 
 
       # Upload Instrument Test results as an artifact
       - name: Upload Instrument Test Reports
