@@ -59,7 +59,7 @@ jobs:
 
       # Run the Unit Tests
       - name: Run Unit Tests
-        run: ./gradlew test
+        run: ./gradlew test --continue
 
       # Upload Unit Test results as an artifact
       - name: Upload Unit Test Reports
@@ -67,7 +67,7 @@ jobs:
         if: always() # Upload even if tests fail
         with:
          name: unit-test-reports
-         path: app/build/reports/tests/testDebugUnitTest/
+         path: app/build/test-results/testDebugUnitTest/
          retention-days: 3
 
       - name: Setup Android SDK
@@ -94,7 +94,7 @@ jobs:
         if: always()
         with:
           name: instrument-test-reports
-          path: app/build/reports/androidTests/
+          path: app/build/outputs/androidTest-results/connected/
           retention-days: 3
 
   # Packaging the app for distribution
@@ -136,7 +136,7 @@ jobs:
         with:
           name: BuzzGuy-release-aab
           path: app/build/outputs/bundle/release/*.aab
-          retention-days: 3
+          retention-days: 30
 
       # Step 6: Upload the generated APK as an artifact (or to Google Play)
 #      - name: Upload release AAB
