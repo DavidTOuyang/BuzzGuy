@@ -1,9 +1,6 @@
 package com.example.myapplication
 
-import android.view.View
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard // Good practice!
 import androidx.test.espresso.action.ViewActions.typeText
@@ -15,7 +12,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
-import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,9 +31,6 @@ class SendButtonInstrumentedTest {
 
     @Test
     fun add_a_message_test() {
-        // Wait for the main activity view to be displayed and focused
-        // This is a more robust way to handle the focus issue
-        onView(isRoot()).perform(waitFor(2000)) // A custom wait helper
 
         val testMessage = "Welcome to BuzzGuy!"
 
@@ -77,19 +70,4 @@ class SendButtonInstrumentedTest {
             device.findObject(tipCloseButton).click()
         }
     }
-
-    private fun waitFor(delay: Long): ViewAction {
-        return object : ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return isRoot()
-            }
-            override fun getDescription(): String {
-                return "wait for $delay milliseconds."
-            }
-            override fun perform(uiController: UiController, view: View?) {
-                uiController.loopMainThreadForAtLeast(delay)
-            }
-        }
-    }
-
 }
