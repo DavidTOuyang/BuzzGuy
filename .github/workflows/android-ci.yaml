@@ -161,7 +161,7 @@ jobs:
           retention-days: 30
 
       # Step Upload the generated APK as an artifact (or to Google Play)
-#      - name: Upload release AAB
+#     - name: Upload release AAB
 #        uses: actions/upload-artifact@v3
 #        with:
 #          name: app-release
