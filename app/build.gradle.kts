@@ -55,9 +55,7 @@ android {
         versionCode = getVersionCodeFromGit()
         versionName = getVersionNameFromGit()
         println("Building version '$versionName' (code $versionCode)")
-
         resValue("string", "contact_email", "\"$contactEmail\"")
-
     }
     buildTypes {
         release {
