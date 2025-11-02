@@ -131,14 +131,17 @@
         <br>
         ]]>
     </string>
+    <!-- Replace the contact email with your own email address.   -->
     <string name="contact">
         <![CDATA[
         <p><b>Contact</b></p>
         <p>
             If you have any questions, concerns, or requests regarding this project, please contact the project team by sending an email to
-            <a href="mailto:d5588ouy@gmail.com">the project team</a>.
+            <a href="mailto:%1$s">the project team</a>.
         </p>
         ]]>
     </string>
     <string name="content_copyright">© 2025 Voynich3529\n Released under the MIT License</string>
+    <!-- This string is a placeholder that will be defined in build.gradle -->
+    <string name="contact_email" translatable="false">your_default_email@example.com</string>
 </resources>

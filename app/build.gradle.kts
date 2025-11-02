@@ -39,6 +39,9 @@ fun getVersionNameFromGit(): String {
     return versionName.ifEmpty { "1.0" }
 }
 
+// Read the email from an environment variable or use a default
+val contactEmail = System.getenv("CONTACT_EMAIL") ?: "local.build@example.com"
+
 android {
     namespace = "com.example.myapplication"
     compileSdk = 36
@@ -52,6 +55,8 @@ android {
         versionCode = getVersionCodeFromGit()
         versionName = getVersionNameFromGit()
         println("Building version '$versionName' (code $versionCode)")
+
+        resValue("string", "contact_email", "\"$contactEmail\"")
 
     }
     buildTypes {

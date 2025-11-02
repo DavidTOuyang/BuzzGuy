@@ -139,9 +139,12 @@ jobs:
       # This step builds the AAB, the release
       - name: Build release AAB
         env:
-           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          # Make sure to update your email if you want to set up
+          # your contact info in the "Terms of Use" and "Privacy Policy" pages.
+          CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           ./gradlew bundleRelease \
             -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
