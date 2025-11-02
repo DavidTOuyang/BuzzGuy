@@ -9,6 +9,7 @@ plugins {
 }
 
 // Helper function to execute a command and return its output.
+// Mainly used for version controls.
 fun String.runCommand(): String {
     return try {
         val parts = this.split("\\s".toRegex())
