@@ -1,3 +1,5 @@
+import java.util.concurrent.TimeUnit
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,22 +8,52 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
 }
 
+// Helper function to execute a command and return its output.
+fun String.runCommand(): String {
+    return try {
+        val parts = this.split("\\s".toRegex())
+        val proc = ProcessBuilder(*parts.toTypedArray())
+            .redirectOutput(ProcessBuilder.Redirect.PIPE)
+            .redirectError(ProcessBuilder.Redirect.PIPE)
+            .start()
+        proc.waitFor(60, TimeUnit.SECONDS)
+        proc.inputStream.bufferedReader().readText().trim()
+    } catch (e: java.io.IOException) {
+        // Return a default value if git isn't available or the command fails
+        e.printStackTrace()
+        ""
+    }
+}
+
+// Function to get the versionCode from the total number of Git commits.
+fun getVersionCodeFromGit(): Int {
+    val commitCount = "git rev-list --count HEAD".runCommand()
+    // Fallback to 1 if the Git command fails
+    return if (commitCount.isNotEmpty()) commitCount.toInt() else 1
+}
+
+// Function to get the versionName from the latest Git tag.
+fun getVersionNameFromGit(): String {
+    val versionName = "git describe --tags --abbrev=0".runCommand()
+    // Fallback to "1.0" if no tags are found
+    return versionName.ifEmpty { "1.0" }
+}
+
 android {
     namespace = "com.example.myapplication"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.myapplication"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 
+        versionCode = getVersionCodeFromGit()
+        versionName = getVersionNameFromGit()
+        println("Building version '$versionName' (code $versionCode)")
+
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -38,7 +70,6 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-
     buildFeatures {
         viewBinding = true
     }

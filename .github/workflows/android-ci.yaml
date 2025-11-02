@@ -123,7 +123,12 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
-          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+          fetch-depth: 0
+
+      # Add step to determine the version name for the artifact
+      - name: Determine Version Name
+        id: version
+        run: echo "VERSION_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
       - name: Decode keystore
         env:
@@ -142,17 +147,17 @@ jobs:
             -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
             -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
-            -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+            -Pandroid.injected.signing.key.password="$KEY_PASSWORD" 
 
       # Uploads the AAB artifact with a 3-day retention period
       - name: Upload release AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: BuzzGuy-release-aab
+          name: BuzzGuy-release-aab-${{ steps.version.outputs.VERSION_NAME }}
           path: app/build/outputs/bundle/release/*.aab
           retention-days: 30
 
-      # Step 6: Upload the generated APK as an artifact (or to Google Play)
+      # Step Upload the generated APK as an artifact (or to Google Play)
 #      - name: Upload release AAB
 #        uses: actions/upload-artifact@v3
 #        with:
