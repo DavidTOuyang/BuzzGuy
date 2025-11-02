@@ -31,7 +31,7 @@ class SideMenuPagesTest {
     @Test
     fun open_terms_of_use_page_test() {
 
-        onView(ViewMatchers.withContentDescription(R.string.navigation_drawer_open)) // Or use the hardcoded string "Open navigation drawer"
+        onView(ViewMatchers.withContentDescription(R.string.navigation_drawer_open))
             .perform(click())
 
         onView(withId(R.id.nav_term))
@@ -45,7 +45,7 @@ class SideMenuPagesTest {
     @Test
     fun open_privacy_policy_page_test() {
 
-        onView(ViewMatchers.withContentDescription(R.string.navigation_drawer_open)) // Or use the hardcoded string "Open navigation drawer"
+        onView(ViewMatchers.withContentDescription(R.string.navigation_drawer_open))
             .perform(click())
 
         onView(withId(R.id.nav_policy))
