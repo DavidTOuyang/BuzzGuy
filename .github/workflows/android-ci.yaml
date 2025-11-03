@@ -119,11 +119,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Setup environment
         uses: ./.github/actions/setup-env
         with:
-          fetch-depth: 0
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
       # Add step to determine the version name for the artifact
       - name: Determine Version Name
