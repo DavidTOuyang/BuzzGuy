@@ -190,6 +190,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: BuzzGuy-release-aab-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
+
+      # Add a step to list files to confirm the AAB is present (optional but recommended for debugging)
+      - name: List files in workspace
+        run: ls -R
 
       # Upload to Play Store. It will find the AAB in the current directory
       - name: Upload to Internal Track
@@ -214,6 +219,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: BuzzGuy-release-aab-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
+
+      - name: List files in workspace
+        run: ls -R
 
       - name: Upload to Production Track
         uses: r0adkll/upload-google-play@v1.1.3
