@@ -142,7 +142,8 @@ jobs:
             echo "VERSION_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           else
             # This is a branch build, use the short commit SHA
-            echo "VERSION_NAME=0.0.0-${{ github.sha }}" >> $GITHUB_OUTPUT
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-8)
+            echo "VERSION_NAME=0.0.0-${SHORT_SHA}" >> $GITHUB_OUTPUT
           fi
 
       - name: Decode keystore
