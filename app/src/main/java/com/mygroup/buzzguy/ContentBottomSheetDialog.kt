@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.mygroup.buzzguy
 
 import android.app.Dialog
 import android.os.Bundle
@@ -13,7 +13,7 @@ import android.widget.FrameLayout
 import androidx.core.os.BundleCompat
 import androidx.core.text.HtmlCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.example.myapplication.databinding.ContentDialogBinding
+import com.mygroup.buzzguy.databinding.ContentDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

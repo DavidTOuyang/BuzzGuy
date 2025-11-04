@@ -41,14 +41,14 @@ fun getVersionNameFromGit(): String {
 }
 
 // Read the email from an environment variable or use a default
-val contactEmail = System.getenv("CONTACT_EMAIL") ?: "local.build@example.com"
+val contactEmail = System.getenv("CONTACT_EMAIL") ?: "local.build@mygroup.com"
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.mygroup.buzzguy"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.mygroup.buzzguy"
         minSdk = 24
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

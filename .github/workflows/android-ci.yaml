@@ -20,22 +20,22 @@ on:
 jobs:
 
 #  # Checking for the syntax of the entire source code
-#  lint:
-#    runs-on: ubuntu-latest
-#    steps:
-#      # Checkout the repository
-#      - name: Checkout repository
-#        uses: actions/checkout@v5
-#
-#      # The composite action for checkout and java
-#      - name: Setup environment
-#        uses: ./.github/actions/setup-env
-#        with:
-#          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
-#
-#      # Add a step to run Android Lint
-#      - name: Run Android Lint
-#        run: ./gradlew lint
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # The composite action for checkout and java
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Add a step to run Android Lint
+      - name: Run Android Lint
+        run: ./gradlew lint
 #
 #  # Running all the tests
 #  unit_test:
@@ -201,7 +201,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.GCP_SA_KEY }}
-          packageName: com.example.myapplication
+          packageName: com.mygroup.buzzguy
           # Use a wildcard to find the downloaded AAB
           releaseFiles: "*.aab"
           track: internal
@@ -228,7 +228,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.GCP_SA_KEY }}
-          packageName: com.example.myapplication
+          packageName: com.mygroup.buzzguy
           releaseFiles: "*.aab"
           track: production
           status: completed

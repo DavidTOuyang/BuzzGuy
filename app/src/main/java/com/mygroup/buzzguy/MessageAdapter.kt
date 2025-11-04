@@ -1,12 +1,12 @@
-package com.example.myapplication
+package com.mygroup.buzzguy
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.databinding.ChatReceivingViewBinding
-import com.example.myapplication.databinding.ChatSendingViewBinding
+import com.mygroup.buzzguy.databinding.ChatReceivingViewBinding
+import com.mygroup.buzzguy.databinding.ChatSendingViewBinding
 
 class MessageAdapter : ListAdapter<Message,
         RecyclerView.ViewHolder>(MessageDiffCallback()) {

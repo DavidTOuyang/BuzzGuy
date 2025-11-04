@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.mygroup.buzzguy
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

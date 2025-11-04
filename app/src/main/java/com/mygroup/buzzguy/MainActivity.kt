@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.mygroup.buzzguy
 
 import android.os.Bundle
 import android.util.Log
@@ -13,10 +13,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.myapplication.databinding.ActivityMainBinding
+import com.mygroup.buzzguy.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import androidx.activity.viewModels
-import com.example.myapplication.viewmodel.ChatViewModel
+import com.mygroup.buzzguy.viewmodel.ChatViewModel
 
 // Firebase packages
 import com.google.firebase.Firebase

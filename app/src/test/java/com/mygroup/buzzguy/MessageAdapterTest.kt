@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.mygroup.buzzguy
 
 import com.google.firebase.Timestamp
 import org.junit.Test

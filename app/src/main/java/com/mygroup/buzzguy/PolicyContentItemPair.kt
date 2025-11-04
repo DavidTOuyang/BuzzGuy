@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.mygroup.buzzguy
 
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes

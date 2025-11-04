@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.mygroup.buzzguy
 
 import com.google.firebase.Firebase
 import com.google.firebase.ai.GenerativeModel

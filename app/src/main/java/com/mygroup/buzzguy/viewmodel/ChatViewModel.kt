@@ -1,4 +1,4 @@
-package com.example.myapplication.viewmodel
+package com.mygroup.buzzguy.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.launch
 
-import com.example.myapplication.GenerativeAIHelper
-import com.example.myapplication.Message
+import com.mygroup.buzzguy.GenerativeAIHelper
+import com.mygroup.buzzguy.Message
 import com.google.firebase.Timestamp
 
 class ChatViewModel : ViewModel() {

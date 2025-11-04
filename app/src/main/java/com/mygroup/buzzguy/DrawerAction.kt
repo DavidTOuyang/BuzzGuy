@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.mygroup.buzzguy
 
 sealed class DrawerAction {
     object NewChat : DrawerAction()
