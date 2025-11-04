@@ -37,7 +37,7 @@ fun getVersionCodeFromGit(): Int {
 fun getVersionNameFromGit(): String {
     val versionName = "git describe --tags --abbrev=0".runCommand()
     // Fallback to "1.0" if no tags are found
-    return versionName.ifEmpty { "1.0" }
+    return versionName.ifEmpty { "1.0-local" }
 }
 
 // Read the email from an environment variable or use a default
@@ -54,7 +54,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         versionCode = getVersionCodeFromGit()
-        versionName = getVersionNameFromGit()
+        versionName = project.findProperty("appVersionName") as? String ?: getVersionNameFromGit()
         println("Building version '$versionName' (code $versionCode)")
         resValue("string", "contact_email", "\"$contactEmail\"")
     }
