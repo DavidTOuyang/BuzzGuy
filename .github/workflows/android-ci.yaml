@@ -204,9 +204,9 @@ jobs:
         uses: google-github-actions/upload-google-play@v2
         with:
           service_account_json_path: ${{ github.workspace }}/sa-key.json
-          packageName: com.example.myapplication
+          package_name: com.example.myapplication
           # Use a wildcard to find the downloaded AAB
-          aabFile: "app-release.aab"
+          release_files: "app-release.aab"
           track: internal
           status: completed
 
@@ -234,8 +234,8 @@ jobs:
         uses: google-github-actions/upload-google-play@v2
         with:
           service_account_json_path: ${{ github.workspace }}/sa-key.json
-          packageName: com.example.myapplication
-          aabFile: "app-release.aab"
+          package_name: com.example.myapplication
+          release_files: "app-release.aab"
           track: production
           status: completed
 
