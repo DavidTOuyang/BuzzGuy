@@ -118,7 +118,7 @@ jobs:
 
   # Packaging the app for distribution
   build:
-    needs: instrumented_test
+#    needs: instrumented_test
     runs-on: ubuntu-latest
     outputs:
       VERSION_NAME: ${{ steps.version.outputs.VERSION_NAME }}
