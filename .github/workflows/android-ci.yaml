@@ -190,11 +190,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: BuzzGuy-release-aab-${{ needs.build.outputs.VERSION_NAME }}
-          path: downloaded-aab-dir
+          path: .
 
       # Add a step to list files to confirm the AAB is present (optional but recommended for debugging)
       - name: List files in workspace
-        run: ls -lR downloaded-aab-dir/
+        run: ls -R
 
       # Upload to Play Store. It will find the AAB in the current directory
       - name: Upload to Internal Track
@@ -203,7 +203,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GCP_SA_KEY}}
           packageName: com.example.myapplication
           # Use a wildcard to find the downloaded AAB
-          aabFile: "downloaded-aab-dir/*.aab"
+          aabFile: "app-release.aab"
           track: internal
           status: completed
 
@@ -219,17 +219,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: BuzzGuy-release-aab-${{ needs.build.outputs.VERSION_NAME }}
-          path: downloaded-aab-dir
+          path: .
 
       - name: List files in workspace
-        run: ls -lR downloaded-aab-dir/
+        run: ls -R
 
       - name: Upload to Production Track
         uses: r0adkll/upload-google-play@v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.GCP_SA_KEY}}
           packageName: com.example.myapplication
-          aabFile: "downloaded-aab-dir/*.aab"
+          aabFile: "app-release.aab"
           track: production
           status: completed
 
