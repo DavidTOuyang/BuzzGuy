@@ -19,6 +19,21 @@
 -keep class io.ktor.serialization.kotlinx.** { *; }
 -keep class io.ktor.serialization.kotlinx.json.** { *; }
 
+# R8 failed because it removed these specific plugin configuration classes.
+# These rules force R8 to keep them.
+
+-keep class io.ktor.client.plugins.HttpTimeout { *; }
+-keep class io.ktor.client.plugins.HttpTimeout$Plugin { *; }
+-keep class io.ktor.client.plugins.HttpTimeout$HttpTimeoutCapabilityConfiguration { *; }
+
+-keep class io.ktor.client.plugins.contentnegotiation.ContentNegotiation { *; }
+-keep class io.ktor.client.plugins.contentnegotiation.ContentNegotiation$Plugin { *; }
+-keep class io.ktor.client.plugins.contentnegotiation.ContentNegotiation$Config { *; }
+
+# If you use the CIO engine, you might need rules for Netty, which CIO depends on.
+-dontwarn io.netty.**
+-keep class io.netty.** { *; }
+
 # Rules for kotlinx.serialization
 # This keeps the metadata required for reflection-based serialization.
 -keepattributes *Annotation*
@@ -35,6 +50,7 @@
 -keepclassmembers class **$Companion {
     <init>(...);
 }
+-keep,includedescriptorclasses class com.mygroup.buzzguy.data.model.**$$serializer
 
 # Keep attributes for inner classes metadata
 -keepattributes InnerClasses, Signature, EnclosingMethod
