@@ -297,6 +297,3 @@ jobs:
           debugSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
           track: production
           status: completed
-
-
-
