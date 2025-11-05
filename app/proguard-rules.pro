@@ -23,20 +23,17 @@
 # This keeps the metadata required for reflection-based serialization.
 -keepattributes *Annotation*
 
-# Keep all classes that are annotated with @Serializable or @Serializer.
-# This is the core rule that preserves your data classes and their generated serializers.
--keep,includedescriptorclasses class com.mygroup.buzzguy.data.model.** {
+# Keep all classes that are annotated with @Serializable or @Serializer,
+# and also keep their companion objects, which hold the serializer().
+# The '*' wildcard covers all packages, including your 'com.mygroup.buzzguy.data.model'.
+-keep,includedescriptorclasses class * {
     @kotlinx.serialization.Serializable <methods>;
+    @kotlinx.serialization.Serializer <methods>;
 }
-
-# Keep all classes in your model package that are annotated with @Serializable
--keep,includedescriptorclasses class com.mygroup.buzzguy.data.model.** {
-    @kotlinx.serialization.Serializable <methods>;
-}
-
-# Keep the companion objects of these serializable classes
--keepclassmembers class com.mygroup.buzzguy.data.model.** {
-    @kotlinx.serialization.Serializable companion;
+# Keep the constructors of all Companion objects, which is a reliable way to
+# prevent them from being removed by R8. This is crucial for runtime serialization.
+-keepclassmembers class **$Companion {
+    <init>(...);
 }
 
 # Keep attributes for inner classes metadata
