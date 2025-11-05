@@ -67,7 +67,7 @@ android {
                 "proguard-rules.pro"
             )
             // This tells Gradle to generate the native debug symbols for the release build.
-            ndk.debugSymbolLevel = "SYMBOL_TABLE"
+            ndk.debugSymbolLevel = "FULL"
         }
     }
     compileOptions {

@@ -122,6 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       VERSION_NAME: ${{ steps.version.outputs.VERSION_NAME }}
+      UPLOAD_NATIVE_SYMBOLS_OUTCOME: ${{ steps.upload-native-symbols.outcome }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -196,13 +197,15 @@ jobs:
           path: app/build/outputs/mapping/release/mapping.txt
           retention-days: 30
 
-#      # Upload the native debug symbols
-#      - name: Upload native debug symbols artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: BuzzGuy-native-symbols-${{ steps.version.outputs.VERSION_NAME }}
-#          path: app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
-#          retention-days: 30
+      # Upload the native debug symbols
+      - name: Upload native debug symbols artifact
+        id: upload-native-symbols
+        if: hashFiles('app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuzzGuy-native-symbols-${{ steps.version.outputs.VERSION_NAME }}
+          path: app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
+          retention-days: 30
 
   # Deploy the artifact to the INTERNAL track for testing
   deploy_internal:
@@ -226,12 +229,14 @@ jobs:
           name: BuzzGuy-mapping-file-${{ needs.build.outputs.VERSION_NAME }}
           path: .
 
-#      # Download the native symbols artifact
-#      - name: Download Native Symbols Artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: BuzzGuy-native-symbols-${{ needs.build.outputs.VERSION_NAME }}
-#          path: .
+      # Download the native symbols artifact
+      - name: Download Native Symbols Artifact
+        id: download-native-symbols
+        if: needs.build.outputs.UPLOAD_NATIVE_SYMBOLS_OUTCOME == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: BuzzGuy-native-symbols-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
 
       # Add a step to list files to confirm the AAB is present (optional but recommended for debugging)
       - name: List files in workspace
@@ -246,7 +251,7 @@ jobs:
           # Use a wildcard to find the downloaded AAB
           releaseFiles: "*.aab"
           mappingFile: "mapping.txt"
-#          nativeSymbols: "native-debug-symbols.zip"
+          nativeSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
           track: internal
           status: completed
 
@@ -271,11 +276,13 @@ jobs:
           name: BuzzGuy-mapping-file-${{ needs.build.outputs.VERSION_NAME }}
           path: .
 
-#      - name: Download Native Symbols Artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: BuzzGuy-native-symbols-${{ needs.build.outputs.VERSION_NAME }}
-#          path: .
+      - name: Download Native Symbols Artifact
+        id: download-native-symbols
+        if: needs.build.outputs.UPLOAD_NATIVE_SYMBOLS_OUTCOME == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: BuzzGuy-native-symbols-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
 
       - name: List files in workspace
         run: ls -R
@@ -287,7 +294,7 @@ jobs:
           packageName: com.mygroup.buzzguy
           releaseFiles: "*.aab"
           mappingFile: "mapping.txt"
-#          nativeSymbols: "native-debug-symbols.zip"
+          nativeSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
           track: production
           status: completed
 
