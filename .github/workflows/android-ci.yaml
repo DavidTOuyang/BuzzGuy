@@ -162,7 +162,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          ./gradlew bundleRelease \
+          ./gradlew clean bundleRelease \
             -PappVersionName=${{ steps.version.outputs.VERSION_NAME }} \
             -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
@@ -176,6 +176,16 @@ jobs:
           name: BuzzGuy-release-aab-${{ steps.version.outputs.VERSION_NAME }}
           path: app/build/outputs/bundle/release/*.aab
           retention-days: 30
+
+      # This step will only run if the build step above fails.
+      # It uploads the missing R8 rules so you can fix your proguard-rules.pro file.
+      - name: Upload missing R8 rules on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: missing-r8-rules
+          path: app/build/outputs/mapping/release/missing_rules.txt
+          retention-days: 7
 
       # Upload the deobfuscation mapping file
       - name: Upload release mapping file artifact

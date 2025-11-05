@@ -19,9 +19,7 @@
 -keep class io.ktor.serialization.kotlinx.** { *; }
 -keep class io.ktor.serialization.kotlinx.json.** { *; }
 
-# R8 failed because it removed these specific plugin configuration classes.
-# These rules force R8 to keep them.
-
+# Rules added to fix R8 build error (from CI/CD log)
 -keep class io.ktor.client.plugins.HttpTimeout { *; }
 -keep class io.ktor.client.plugins.HttpTimeout$Plugin { *; }
 -keep class io.ktor.client.plugins.HttpTimeout$HttpTimeoutCapabilityConfiguration { *; }
@@ -29,6 +27,8 @@
 -keep class io.ktor.client.plugins.contentnegotiation.ContentNegotiation { *; }
 -keep class io.ktor.client.plugins.contentnegotiation.ContentNegotiation$Plugin { *; }
 -keep class io.ktor.client.plugins.contentnegotiation.ContentNegotiation$Config { *; }
+-keep class com.some.other.library.Class { *; }
+-dontwarn com.some.other.library.**
 
 # If you use the CIO engine, you might need rules for Netty, which CIO depends on.
 -dontwarn io.netty.**
