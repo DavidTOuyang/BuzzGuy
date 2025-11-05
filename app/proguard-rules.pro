@@ -1,3 +1,17 @@
+# These rules are necessary because Ktor uses reflection, which fools R8.
+-keep class io.ktor.client.plugins.** { *; }
+-keep class io.ktor.client.engine.** { *; }
+-keep class io.ktor.client.features.** { *; }
+-keep class io.ktor.client.request.** { *; }
+-keep class io.ktor.client.statement.** { *; }
+-keep class io.ktor.client.utils.** { *; }
+-keep class io.ktor.http.** { *; }
+-keep class io.ktor.util.** { *; }
+-keep class io.ktor.network.** { *; }
+
+# This is a general rule for libraries that use Kotlin Coroutines.
+-dontwarn kotlinx.coroutines.flow.**
+
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.

@@ -236,7 +236,7 @@ jobs:
           # Use a wildcard to find the downloaded AAB
           releaseFiles: "*.aab"
           mappingFile: "mapping.txt"
-          debugSymbols: "native-debug-symbols.zip"
+          nativeSymbols: "native-debug-symbols.zip"
           track: internal
           status: completed
 
@@ -277,7 +277,7 @@ jobs:
           packageName: com.mygroup.buzzguy
           releaseFiles: "*.aab"
           mappingFile: "mapping.txt"
-          debugSymbols: "native-debug-symbols.zip"
+          nativeSymbols: "native-debug-symbols.zip"
           track: production
           status: completed
 
