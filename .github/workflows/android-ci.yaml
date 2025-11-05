@@ -251,7 +251,7 @@ jobs:
           # Use a wildcard to find the downloaded AAB
           releaseFiles: "*.aab"
           mappingFile: "mapping.txt"
-          nativeSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
+          debugSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
           track: internal
           status: completed
 
@@ -294,7 +294,7 @@ jobs:
           packageName: com.mygroup.buzzguy
           releaseFiles: "*.aab"
           mappingFile: "mapping.txt"
-          nativeSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
+          debugSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
           track: production
           status: completed
 
