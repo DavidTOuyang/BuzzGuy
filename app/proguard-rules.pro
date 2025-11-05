@@ -25,9 +25,18 @@
 
 # Keep all classes that are annotated with @Serializable or @Serializer.
 # This is the core rule that preserves your data classes and their generated serializers.
--keep,includedescriptorclasses class * {
+-keep,includedescriptorclasses class com.mygroup.buzzguy.data.model.** {
     @kotlinx.serialization.Serializable <methods>;
-    @kotlinx.serialization.Serializer <methods>;
+}
+
+# Keep all classes in your model package that are annotated with @Serializable
+-keep,includedescriptorclasses class com.mygroup.buzzguy.data.model.** {
+    @kotlinx.serialization.Serializable <methods>;
+}
+
+# Keep the companion objects of these serializable classes
+-keepclassmembers class com.mygroup.buzzguy.data.model.** {
+    @kotlinx.serialization.Serializable companion;
 }
 
 # Keep attributes for inner classes metadata
