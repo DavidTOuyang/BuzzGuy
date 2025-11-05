@@ -19,10 +19,16 @@
 -keep class io.ktor.serialization.kotlinx.** { *; }
 -keep class io.ktor.serialization.kotlinx.json.** { *; }
 
-# Also keep classes for the JSON serializer if you use it
--keep class kotlinx.serialization.** { *; }
--keep class kotlinx.serialization.json.** { *; }
--keep class kotlinx.serialization.internal.** { *; }
+# Rules for kotlinx.serialization
+# This keeps the metadata required for reflection-based serialization.
+-keepattributes *Annotation*
+
+# Keep all classes that are annotated with @Serializable or @Serializer.
+# This is the core rule that preserves your data classes and their generated serializers.
+-keep,includedescriptorclasses class * {
+    @kotlinx.serialization.Serializable <methods>;
+    @kotlinx.serialization.Serializer <methods>;
+}
 
 # Keep attributes for inner classes metadata
 -keepattributes InnerClasses, Signature, EnclosingMethod
