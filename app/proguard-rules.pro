@@ -9,6 +9,10 @@
 -keep class io.ktor.util.** { *; }
 -keep class io.ktor.network.** { *; }
 
+# This tells R8 not to worry about missing standard Java management classes,
+# which are not part of the Android runtime. Ktor uses them for debug detection.
+-dontwarn java.lang.management.**
+
 # This is a general rule for libraries that use Kotlin Coroutines.
 -dontwarn kotlinx.coroutines.flow.**
 
