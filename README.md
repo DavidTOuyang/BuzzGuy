@@ -40,7 +40,7 @@ Here is the list of technologies used in this project, for convenience:
 <!-- start installation -->
 ### Setup Android Studio
 
-You may download Android studio from the following link: [Android Studio](https://developer.android.com/studio)
+You may download Android studio from the following link: [Android Studio](https://developer.android.com/studio).
 
 ### Clone the Repository
 
