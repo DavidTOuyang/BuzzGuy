@@ -1,5 +1,11 @@
 [![Android CI](https://github.com/DavidTOuyang/BuzzGuy/actions/workflows/android-ci.yaml/badge.svg)](https://github.com/DavidTOuyang/BuzzGuy/actions/workflows/android-ci.yaml)
-[![Version](https://img.shields.io/badge/version-1.0-blue)](https://github.com/DavidTOuyang/BuzzGuy/releases)
+[![GitHub release](https://img.shields.io/github/v/release/DavidTOuyang/BuzzGuy)](https://github.com/DavidTOuyang/BuzzGuy/releases/latest)
+[![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/DavidTOuyang/BuzzGuy?style=social)](https://github.com/DavidTOuyang/BuzzGuy/stargazers)
+
+# BuzzGuy
+...
 
 # BuzzGuy
 
