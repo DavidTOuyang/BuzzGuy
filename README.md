@@ -3,7 +3,7 @@
 # BuzzGuy
 
 <div align="center">
-    <img src="app/src/main/ic_launcher-playstore.png" alt="BuzzGuy Logo" width="150" height="150">
+    <img src="/app/src/main/ic_launcher-playstore.png" alt="BuzzGuy Logo" width="150" height="150">
 </div>
 
 ## Description
@@ -47,7 +47,7 @@ Call `git clone https://github.com/DavidTOuyang/BuzzGuy.git` in the terminal to 
 This project requires a `google-services.json` file from Firebase to enable backend services (like Authentication) and the Gemini API.
 1.  **Create a Firebase Project:** Follow the official documentation to [create a new Firebase project and add it to your Android app](https://firebase.google.com/docs/android/setup).
 2.  **Enable Gemini:** The Gemini API is part of Google Cloud. In your new project's Google Cloud Console, ensure the **"Generative Language API"** is enabled.
-3.  **Download and Place File:** From the Firebase console, download the `google-services.json` file and place it in the `app/` directory of this project.
+3.  **Download and Place File:** From the Firebase console, download the `google-services.json` file and place it in the `/app/` directory of this project.
 
 The app will not build or run correctly without this file.
 
