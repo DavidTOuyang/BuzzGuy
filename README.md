@@ -65,7 +65,7 @@ the small elephant icon in the top-right corner of the menu bar.
 
 One of the key features of this project is the ability to easily customize the AI's behavior and personality. 
 All AI configuration is centralized in the `GenerativeAIHelper.kt` object, 
-located at `/app/src/main/java/com/mygroup/buzzguy/GenerativeAIHelper.kt`
+located at `/app/src/main/java/com/mygroup/buzzguy/GenerativeAIHelper.kt`.
 
 Inside this file, you can modify several key parameters:
 
