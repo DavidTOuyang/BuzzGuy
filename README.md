@@ -5,9 +5,6 @@
 [![GitHub Stars](https://img.shields.io/github/stars/DavidTOuyang/BuzzGuy?style=social)](https://github.com/DavidTOuyang/BuzzGuy/stargazers)
 
 # BuzzGuy
-...
-
-# BuzzGuy
 
 <div align="center">
     <img src="/app/src/main/ic_launcher-playstore.png" alt="BuzzGuy Logo" width="150" height="150">
