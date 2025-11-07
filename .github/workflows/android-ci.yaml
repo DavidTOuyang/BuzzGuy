@@ -138,10 +138,13 @@ jobs:
       - name: Determine Version Name
         id: version
         run: |
-          # Use the total number of commits as the version code.
-          # This guarantees the version code always increases.
-          VERSION_CODE=$(git rev-list --count HEAD)
+          # Use the GitHub Run Number as a base for the version code.
+          # This guarantees the version code always increases globally for the repo.
+          # We add 1000 to avoid conflicts with any manual version codes you might have used previously.
+          RUN_NUM=${{ github.run_number }}
+          VERSION_CODE=$((RUN_NUM + 1000))
           echo "VERSION_CODE=${VERSION_CODE}" >> $GITHUB_OUTPUT
+          echo "Determined VERSION_CODE: $VERSION_CODE"   
           
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             # This is a tag build, use the tag name
