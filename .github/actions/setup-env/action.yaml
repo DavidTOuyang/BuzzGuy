@@ -1,0 +1,33 @@
+name: 'Setup Android Environment'
+description: 'Checks out the code and sets up the specified Java version.'
+
+# Getting the inputs from the workflow file
+inputs:
+  google_services_json:
+    description: 'The base64 encoded google-services.json file.'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    # Set up the Java Development Kit (JDK)
+    # 25 is the latest, but for stability concern, I decided to use the
+    # Long-Term Support (LTS) version.
+    # Eclipse Temurin is the mot recommended distributor, so I am using it.
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    # Retrieve the secret containing the Google Services JSON file
+    - name: Create google-services.json from secret
+      env:
+        GOOGLE_SERVICES_BASE64: ${{ inputs.google_services_json }}
+      run: echo "$GOOGLE_SERVICES_BASE64" | base64 --decode > ${{ github.workspace }}/app/google-services.json
+      shell: bash
+
+    # Grant execute permission for the Gradle wrapper
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      shell: bash

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+
+        <!-- Use the 'title' attribute to display the menu item text -->
+        <item
+            android:id="@+id/nav_new_chat"
+            android:title="@string/refresh" />
+        <item
+            android:id="@+id/nav_term"
+            android:title="@string/term_title" />
+        <item
+            android:id="@+id/nav_policy"
+            android:title="@string/policy_title" />
+    </group>
+</menu>

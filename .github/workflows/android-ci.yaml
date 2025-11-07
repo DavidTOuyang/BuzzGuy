@@ -1,0 +1,299 @@
+# Name of the workflow as it appears in the Actions tab
+name: Android CI
+
+# Define the events that trigger the workflow
+on:
+  push:
+    branches:
+      - "main"
+      - "Iteration*"
+
+    # Triggers on tags like v1.0.0, v1.2.3 etc.
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - "main"
+      - "Iteration*"
+
+# A workflow is made up of one or more jobs
+jobs:
+
+  # Checking for the syntax of the entire source code
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # The composite action for checkout and java
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Add a step to run Android Lint
+      - name: Run Android Lint
+        run: ./gradlew lint
+
+  # Running all the tests
+  unit_test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Cache Gradle dependencies to speed up builds
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # Run the Unit Tests
+      - name: Run Unit Tests
+        run: ./gradlew test --continue
+
+      # Upload Unit Test results as an artifact
+      - name: Upload Unit Test Reports
+        uses: actions/upload-artifact@v4
+        if: always() # Upload even if tests fail
+        with:
+         name: unit-test-reports
+         path: app/build/reports/tests/testDebugUnitTest/
+         retention-days: 3
+
+  instrumented_test:
+    needs: unit_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Run the Instrument Tests
+      - name: Run Instrument Tests
+        uses: reactivecircus/android-emulator-runner@v2.34.0
+        with:
+          api-level: 35
+          target: google_apis # Ensures a stable, resource-efficient target
+          arch: x86_64 # Specify the 64-bit architecture
+          # Adjust ram-size to prevent resource starvation on the CI runner
+          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
+          script: |
+            adb wait-for-device
+            adb shell input keyevent 82
+            adb devices
+            ./gradlew connectedAndroidTest --continue
+
+      # Upload Instrument Test results as an artifact
+      - name: Upload Instrument Test Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: instrument-test-reports
+          path: app/build/reports/androidTests/connected/
+          retention-days: 3
+
+  # Packaging the app for distribution
+  build:
+    needs: instrumented_test
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION_NAME: ${{ steps.version.outputs.VERSION_NAME }}
+      UPLOAD_NATIVE_SYMBOLS_OUTCOME: ${{ steps.upload-native-symbols.outcome }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Add step to determine the version name for the artifact
+      - name: Determine Version Name
+        id: version
+        run: |
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            # This is a tag build, use the tag name
+            echo "VERSION_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            # This is a branch build, use the short commit SHA
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-8)
+            echo "VERSION_NAME=0.0.0-${SHORT_SHA}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Decode keystore
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+        run: |
+          echo "${KEYSTORE_FILE}" | base64 --decode > ${{ github.workspace }}/app/keystore.jks
+
+      # This step builds the AAB, the release
+      - name: Build release AAB
+        env:
+          # Make sure to update your email if you want to set up
+          # your contact info in the "Terms of Use" and "Privacy Policy" pages.
+          CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          ./gradlew clean bundleRelease \
+            -PappVersionName=${{ steps.version.outputs.VERSION_NAME }} \
+            -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KEY_PASSWORD" 
+
+      # Uploads the AAB artifact with a 3-day retention period
+      - name: Upload release AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuzzGuy-release-aab-${{ steps.version.outputs.VERSION_NAME }}
+          path: app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
+      # This step will only run if the build step above fails.
+      # It uploads the missing R8 rules so you can fix your proguard-rules.pro file.
+      - name: Upload missing R8 rules on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: missing-r8-rules
+          path: app/build/outputs/mapping/release/missing_rules.txt
+          retention-days: 7
+
+      # Upload the deobfuscation mapping file
+      - name: Upload release mapping file artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuzzGuy-mapping-file-${{ steps.version.outputs.VERSION_NAME }}
+          # The path to the mapping file generated during the 'bundleRelease' task
+          path: app/build/outputs/mapping/release/mapping.txt
+          retention-days: 30
+
+      # Upload the native debug symbols
+      - name: Upload native debug symbols artifact
+        id: upload-native-symbols
+        if: hashFiles('app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuzzGuy-native-symbols-${{ steps.version.outputs.VERSION_NAME }}
+          path: app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
+          retention-days: 30
+
+  # Deploy the artifact to the INTERNAL track for testing
+  deploy_internal:
+    needs: build
+    name: Deploy to Internal Track
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'branch'
+    steps:
+
+      # Download the artifact that was built in the previous step
+      - name: Download AAB Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: BuzzGuy-release-aab-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
+
+      # Download the mapping file artifact
+      - name: Download Mapping File Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: BuzzGuy-mapping-file-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
+
+      # Download the native symbols artifact
+      - name: Download Native Symbols Artifact
+        id: download-native-symbols
+        if: needs.build.outputs.UPLOAD_NATIVE_SYMBOLS_OUTCOME == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: BuzzGuy-native-symbols-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
+
+      # Add a step to list files to confirm the AAB is present (optional but recommended for debugging)
+      - name: List files in workspace
+        run: ls -R
+
+      # Upload to Play Store. It will find the AAB in the current directory
+      - name: Upload to Internal Track
+        uses: r0adkll/upload-google-play@v1.1.3
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GCP_SA_KEY }}
+          packageName: com.mygroup.buzzguy
+          # Use a wildcard to find the downloaded AAB
+          releaseFiles: "*.aab"
+          mappingFile: "mapping.txt"
+          debugSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
+          track: internal
+          status: completed
+
+  # Deploy the artifact to the PRODUCTION track when a tag is created
+  deploy_production:
+    needs: build
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    # This job ONLY runs when a tag is pushed
+    if: github.ref_type == 'tag'
+    steps:
+      - name: Download AAB Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: BuzzGuy-release-aab-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
+
+      # Download the mapping file artifact
+      - name: Download Mapping File Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: BuzzGuy-mapping-file-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
+
+      - name: Download Native Symbols Artifact
+        id: download-native-symbols
+        if: needs.build.outputs.UPLOAD_NATIVE_SYMBOLS_OUTCOME == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: BuzzGuy-native-symbols-${{ needs.build.outputs.VERSION_NAME }}
+          path: .
+
+      - name: List files in workspace
+        run: ls -R
+
+      - name: Upload to Production Track
+        uses: r0adkll/upload-google-play@v1.1.3
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GCP_SA_KEY }}
+          packageName: com.mygroup.buzzguy
+          releaseFiles: "*.aab"
+          mappingFile: "mapping.txt"
+          debugSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
+          track: production
+          status: completed
