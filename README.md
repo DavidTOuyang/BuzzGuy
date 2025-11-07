@@ -1,4 +1,5 @@
 [![Android CI](https://github.com/DavidTOuyang/BuzzGuy/actions/workflows/android-ci.yaml/badge.svg)](https://github.com/DavidTOuyang/BuzzGuy/actions/workflows/android-ci.yaml)
+[![Version](https://img.shields.io/badge/version-1.0-blue)](https://github.com/DavidTOuyang/BuzzGuy/releases)
 
 # BuzzGuy
 
