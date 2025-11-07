@@ -162,7 +162,7 @@ Here is a list of contributors who supported this project:
 
 # License
 
-The scripts and documentation in this project are released under the [MIT License](LICENSE)
+The scripts and documentation in this project are released under the [MIT License](LICENSE).
 
 [AndroidStudio-url]: https://img.shields.io/badge/Android%20Studio-3DDC84?style=flat&logo=AndroidStudio&logoColor=white
 [AndroidStudio-site-url]: https://developer.android.com/studio
