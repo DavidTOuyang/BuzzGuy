@@ -138,6 +138,11 @@ jobs:
       - name: Determine Version Name
         id: version
         run: |
+          # Use the total number of commits as the version code.
+          # This guarantees the version code always increases.
+          VERSION_CODE=$(git rev-list --count HEAD)
+          echo "VERSION_CODE=${VERSION_CODE}" >> $GITHUB_OUTPUT
+          
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             # This is a tag build, use the tag name
             echo "VERSION_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
@@ -164,6 +169,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           ./gradlew clean bundleRelease \
+            -PappVersionCode=${{ steps.version.outputs.VERSION_CODE }} \
             -PappVersionName=${{ steps.version.outputs.VERSION_NAME }} \
             -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
