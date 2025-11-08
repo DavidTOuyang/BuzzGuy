@@ -120,6 +120,8 @@ jobs:
   build:
 #    needs: instrumented_test
     runs-on: ubuntu-latest
+    env:
+      PACKAGE_NAME: com.mygroup.buzzguy
     outputs:
       VERSION_NAME: ${{ steps.version.outputs.VERSION_NAME }}
       UPLOAD_NATIVE_SYMBOLS_OUTCOME: ${{ steps.upload-native-symbols.outcome }}
@@ -154,9 +156,9 @@ jobs:
         # It queries the Google Play API for the highest existing version code
         # across all tracks (internal, production, etc.).
         run: |
-          # 1. Authenticate and get an access token
-          ACCESS_TOKEN=$(gcloud auth print-access-token)
-          
+          # 1. Authenticate and get an access token WITH the correct scope
+          ACCESS_TOKEN=$(gcloud auth print-access-token --scopes=https://www.googleapis.com/auth/androidpublisher)
+    
           # 2. Make the API call and store the response in a variable
           API_RESPONSE=$(curl -s -X GET \
             "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/edits" \
