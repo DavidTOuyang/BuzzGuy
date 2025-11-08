@@ -146,7 +146,7 @@ jobs:
 
       # Install any additional gcloud components
       - name: Install gcloud beta components
-        run: gcloud components install beta -q
+        run: sudo apt-get install google-cloud-cli
 
       - name: Fetch Max Play Store Version Code and Set Next Version
         id: version
