@@ -19,106 +19,106 @@ on:
 # A workflow is made up of one or more jobs
 jobs:
 
-#  # Checking for the syntax of the entire source code
-#  lint:
-#    runs-on: ubuntu-latest
-#    steps:
-#      # Checkout the repository
-#      - name: Checkout repository
-#        uses: actions/checkout@v5
-#
-#      # The composite action for checkout and java
-#      - name: Setup environment
-#        uses: ./.github/actions/setup-env
-#        with:
-#          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
-#
-#      # Add a step to run Android Lint
-#      - name: Run Android Lint
-#        run: ./gradlew lint
-#
-#  # Running all the tests
-#  unit_test:
-#    needs: lint
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v5
-#
-#      - name: Setup environment
-#        uses: ./.github/actions/setup-env
-#        with:
-#          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
-#
-#      # Cache Gradle dependencies to speed up builds
-#      - name: Cache Gradle
-#        uses: actions/cache@v4
-#        with:
-#          path: |
-#            ~/.gradle/caches
-#            ~/.gradle/wrapper
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-#          restore-keys: |
-#            ${{ runner.os }}-gradle-
-#
-#      # Run the Unit Tests
-#      - name: Run Unit Tests
-#        run: ./gradlew test --continue
-#
-#      # Upload Unit Test results as an artifact
-#      - name: Upload Unit Test Reports
-#        uses: actions/upload-artifact@v4
-#        if: always() # Upload even if tests fail
-#        with:
-#         name: unit-test-reports
-#         path: app/build/reports/tests/testDebugUnitTest/
-#         retention-days: 3
-#
-#  instrumented_test:
-#    needs: unit_test
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v5
-#
-#      - name: Enable KVM
-#        run: |
-#          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-#          sudo udevadm control --reload-rules
-#          sudo udevadm trigger --name-match=kvm
-#
-#      - name: Setup environment
-#        uses: ./.github/actions/setup-env
-#        with:
-#          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
-#
-#      # Run the Instrument Tests
-#      - name: Run Instrument Tests
-#        uses: reactivecircus/android-emulator-runner@v2.34.0
-#        with:
-#          api-level: 35
-#          target: google_apis # Ensures a stable, resource-efficient target
-#          arch: x86_64 # Specify the 64-bit architecture
-#          # Adjust ram-size to prevent resource starvation on the CI runner
-#          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
-#          script: |
-#            adb wait-for-device
-#            adb shell input keyevent 82
-#            adb devices
-#            ./gradlew connectedAndroidTest --continue
-#
-#      # Upload Instrument Test results as an artifact
-#      - name: Upload Instrument Test Reports
-#        uses: actions/upload-artifact@v4
-#        if: always()
-#        with:
-#          name: instrument-test-reports
-#          path: app/build/reports/androidTests/connected/
-#          retention-days: 3
+  # Checking for the syntax of the entire source code
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # The composite action for checkout and java
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Add a step to run Android Lint
+      - name: Run Android Lint
+        run: ./gradlew lint
+
+  # Running all the tests
+  unit_test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Cache Gradle dependencies to speed up builds
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # Run the Unit Tests
+      - name: Run Unit Tests
+        run: ./gradlew test --continue
+
+      # Upload Unit Test results as an artifact
+      - name: Upload Unit Test Reports
+        uses: actions/upload-artifact@v4
+        if: always() # Upload even if tests fail
+        with:
+         name: unit-test-reports
+         path: app/build/reports/tests/testDebugUnitTest/
+         retention-days: 3
+
+  instrumented_test:
+    needs: unit_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Run the Instrument Tests
+      - name: Run Instrument Tests
+        uses: reactivecircus/android-emulator-runner@v2.34.0
+        with:
+          api-level: 35
+          target: google_apis # Ensures a stable, resource-efficient target
+          arch: x86_64 # Specify the 64-bit architecture
+          # Adjust ram-size to prevent resource starvation on the CI runner
+          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
+          script: |
+            adb wait-for-device
+            adb shell input keyevent 82
+            adb devices
+            ./gradlew connectedAndroidTest --continue
+
+      # Upload Instrument Test results as an artifact
+      - name: Upload Instrument Test Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: instrument-test-reports
+          path: app/build/reports/androidTests/connected/
+          retention-days: 3
 
   # Packaging the app for distribution
   build:
-#    needs: instrumented_test
+    needs: instrumented_test
     runs-on: ubuntu-latest
     outputs:
       VERSION_NAME: ${{ steps.version.outputs.VERSION_NAME }}
@@ -134,27 +134,42 @@ jobs:
         with:
           google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
-      # Add step to determine the version name for the artifact
-      - name: Determine Version Name
+      - name: Fetch Max Play Store Version Code and Set Next Version
         id: version
+        # This script runs before determining the new version.
+        # It queries the Google Play API for the highest existing version code
+        # across all tracks (internal, production, etc.).
         run: |
-          # The github.run_id is a unique ID for each workflow run and is independent
-          # of the workflow filename or name. Use a large offset to prevent
-          # conflicts with any previously published versions.
-          RUN_ID_STRING=${{ github.run_id }}
-          VERSION_CODE_OFFSET=1000000 # Use a very large offset
-          VERSION_CODE=$((RUN_ID_STRING + VERSION_CODE_OFFSET))
-          echo "VERSION_CODE=${VERSION_CODE}" >> $GITHUB_OUTPUT
-          echo "Determined VERSION_CODE: $VERSION_CODE"
+          # 1. Set up gcloud authentication using your existing secret
+          echo "${{ secrets.GCP_SA_KEY }}" > gcp_sa_key.json
+          gcloud auth activate-service-account --key-file=gcp_sa_key.json
+          PACKAGE_NAME="com.mygroup.buzzguy"
           
+          # 2. Query the Play Store API for all app versions
+          # The API response is processed to find the maximum version code.
+          MAX_CODE=$(gcloud alpha play releases list --pkg="$PACKAGE_NAME" --format=json | \
+            jq '[.[] | .versionCodes[] | tonumber] | max // 0')
+          
+          # If max_code is null (no releases yet), default to 0.
+          if [ "$MAX_CODE" = "null" ]; then
+            MAX_CODE=0
+          fi
+          
+          NEXT_CODE=$((MAX_CODE + 1))
+          echo "Found Max Play Store Version Code: $MAX_CODE"
+          echo "Setting Next Version Code to: $NEXT_CODE"
+          echo "VERSION_CODE=${NEXT_CODE}" >> $GITHUB_OUTPUT
+          
+          # 3. Determine the version name as before
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            # This is a tag build, use the tag name
             echo "VERSION_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           else
-            # This is a branch build, use the short commit SHA
             SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-8)
             echo "VERSION_NAME=0.0.0-${SHORT_SHA}" >> $GITHUB_OUTPUT
           fi
+        # We need jq to parse JSON and gcloud for the Play API tools.
+        # Ubuntu runners usually have these pre-installed, but we can verify.
+        shell: bash
 
       - name: Decode keystore
         env:
