@@ -123,6 +123,10 @@ jobs:
     outputs:
       VERSION_NAME: ${{ steps.version.outputs.VERSION_NAME }}
       UPLOAD_NATIVE_SYMBOLS_OUTCOME: ${{ steps.upload-native-symbols.outcome }}
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Required for Workload Identity Federation
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -134,7 +138,13 @@ jobs:
         with:
           google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
-      # Install Google Cloud component
+      # Authenticate to Google Cloud
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2.2.1
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      # Install any additional gcloud components
       - name: Install gcloud beta components
         run: gcloud components install beta -q
 
@@ -144,11 +154,6 @@ jobs:
         # It queries the Google Play API for the highest existing version code
         # across all tracks (internal, production, etc.).
         run: |
-          # The secret must contain the full JSON key
-          cat <<EOF > gcp_sa_key.json
-          ${{ secrets.GCP_SA_KEY }}
-          EOF
-          gcloud auth activate-service-account --key-file=gcp_sa_key.json
           PACKAGE_NAME="com.mygroup.buzzguy"
           
           # Query the Play Store API and find the maximum version code.
