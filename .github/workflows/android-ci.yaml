@@ -96,7 +96,7 @@ jobs:
       - name: Run Instrument Tests
         uses: reactivecircus/android-emulator-runner@v2.34.0
         with:
-          api-level: 35
+          api-level: 34
           target: google_apis # Ensures a stable, resource-efficient target
           arch: x86_64 # Specify the 64-bit architecture
           # Adjust ram-size to prevent resource starvation on the CI runner
@@ -120,9 +120,15 @@ jobs:
   build:
     needs: instrumented_test
     runs-on: ubuntu-latest
+    env:
+      PACKAGE_NAME: com.mygroup.buzzguy
     outputs:
       VERSION_NAME: ${{ steps.version.outputs.VERSION_NAME }}
       UPLOAD_NATIVE_SYMBOLS_OUTCOME: ${{ steps.upload-native-symbols.outcome }}
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Required for Workload Identity Federation
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -134,18 +140,77 @@ jobs:
         with:
           google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
-      # Add step to determine the version name for the artifact
-      - name: Determine Version Name
+      # Authenticate to Google Cloud
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      # Install any additional gcloud components
+      - name: Install gcloud beta components
+        run: sudo apt-get install google-cloud-cli
+
+      - name: Fetch Max Play Store Version Code and Set Next Version
         id: version
+        # This script runs before determining the new version.
+        # It queries the Google Play API for the highest existing version code
+        # across all tracks (internal, production, etc.).
         run: |
+          # 1. Authenticate and get an access token WITH the correct scope
+          ACCESS_TOKEN=$(gcloud auth print-access-token --scopes=https://www.googleapis.com/auth/androidpublisher)
+          
+          # 2. Start a new edit to get a valid editId for querying published tracks
+          EDIT_RESPONSE=$(curl -s -X POST \
+            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/edits" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{}')
+        
+          # Check if starting an edit was successful
+          if echo "${EDIT_RESPONSE}" | jq -e '.error' > /dev/null; then
+            echo "::error::Failed to start a new edit:"
+            echo "${EDIT_RESPONSE}"
+            exit 1
+          fi
+
+          EDIT_ID=$(echo "${EDIT_RESPONSE}" | jq -r '.id')
+          echo "Created new Edit ID: ${EDIT_ID}"
+          
+          # 3. Use the editId to list all track data (which contains current published versions)
+          TRACKS_RESPONSE=$(curl -s -X GET \
+            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/edits/${EDIT_ID}/tracks" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}")
+          
+          # 4. (CRITICAL) Check if the API call was successful
+          if echo "${TRACKS_RESPONSE}" | jq -e '.error' > /dev/null; then
+            echo "::error::Google Play API returned an error when fetching tracks:"
+            echo "${TRACKS_RESPONSE}"
+            exit 1
+          fi
+
+          # 5. Parse the track data with jq to find the absolute max version code
+          # We search all tracks for all releases and all versionCodes.
+          MAX_CODE=$(echo "${TRACKS_RESPONSE}" | \
+          jq '[.tracks[]?.releases[]?.versionCodes[]? | tonumber] | max // 0')
+          
+          # Calculate the next version code and set outputs for subsequent steps.
+          if [[ -z "$MAX_CODE" || "$MAX_CODE" == "null" ]]; then
+            MAX_CODE=0
+          fi
+          
+          NEXT_CODE=$((MAX_CODE + 1))
+          echo "Found Max Play Store Version Code: $MAX_CODE"
+          echo "Setting Next Version Code to: $NEXT_CODE"
+          echo "VERSION_CODE=${NEXT_CODE}" >> $GITHUB_OUTPUT
+          
+          # Determine the version name based on the trigger (tag or commit).
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            # This is a tag build, use the tag name
             echo "VERSION_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           else
-            # This is a branch build, use the short commit SHA
             SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-8)
             echo "VERSION_NAME=0.0.0-${SHORT_SHA}" >> $GITHUB_OUTPUT
           fi
+        shell: bash
 
       - name: Decode keystore
         env:
@@ -164,6 +229,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           ./gradlew clean bundleRelease \
+            -PappVersionCode=${{ steps.version.outputs.VERSION_CODE }} \
             -PappVersionName=${{ steps.version.outputs.VERSION_NAME }} \
             -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
             -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
