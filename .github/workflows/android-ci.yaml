@@ -134,10 +134,6 @@ jobs:
         with:
           google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
-      # Install the essential component
-      - name: Install Google Play gcloud components
-        run: gcloud components install play-games -q
-
       - name: Fetch Max Play Store Version Code and Set Next Version
         id: version
         # This script runs before determining the new version.
@@ -150,18 +146,19 @@ jobs:
           EOF
           gcloud auth activate-service-account --key-file=gcp_sa_key.json
           PACKAGE_NAME="com.mygroup.buzzguy"
-          # 2. Query the Play Store API and find the maximum version code.
+          
+          # Query the Play Store API and find the maximum version code.
           # The 'jq' filter finds the highest version code and defaults to 0 if none exist.
-          MAX_CODE=$(gcloud alpha play releases list --pkg="$PACKAGE_NAME" --format=json | \
+          MAX_CODE=$(gcloud beta play releases list --track=internal --pkg="$PACKAGE_NAME" --format=json | \
           jq '[.[] | .versionCodes[] | tonumber] | max // 0')
           
-          # 3. Calculate the next version code and set outputs for subsequent steps.
+          # Calculate the next version code and set outputs for subsequent steps.
           NEXT_CODE=$((MAX_CODE + 1))
           echo "Found Max Play Store Version Code: $MAX_CODE"
           echo "Setting Next Version Code to: $NEXT_CODE"
           echo "VERSION_CODE=${NEXT_CODE}" >> $GITHUB_OUTPUT
           
-          # 4. Determine the version name based on the trigger (tag or commit).
+          # Determine the version name based on the trigger (tag or commit).
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             echo "VERSION_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           else
