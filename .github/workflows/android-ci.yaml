@@ -191,7 +191,7 @@ jobs:
           # 5. Parse the track data with jq to find the absolute max version code
           # We search all tracks for all releases and all versionCodes.
           MAX_CODE=$(echo "${TRACKS_RESPONSE}" | \
-            jq '[.tracks[].releases[].versionCodes[] | tonumber] | max // 0')
+          jq '[((.tracks // [])[]).releases[].versionCodes[] | tonumber] | max // 0')
           
           # Calculate the next version code and set outputs for subsequent steps.
           if [[ -z "$MAX_CODE" || "$MAX_CODE" == "null" ]]; then
