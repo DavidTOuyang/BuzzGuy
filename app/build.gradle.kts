@@ -27,7 +27,7 @@ fun String.runCommand(): String {
 }
 
 // Function to get the versionCode from the total number of Git commits.
-fun getVersionCodeFromGit(): Int {
+fun getVersionCodeFallback(): Int {
     val commitCount = "git rev-list --count HEAD".runCommand()
     // Fallback to 1 if the Git command fails
     return if (commitCount.isNotEmpty()) commitCount.toInt() else 1
@@ -53,7 +53,7 @@ android {
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode = getVersionCodeFromGit()
+        versionCode = project.findProperty("appVersionCode")?.toString()?.toInt() ?: getVersionCodeFallback()
         versionName = project.findProperty("appVersionName") as? String ?: getVersionNameFromGit()
         println("Building version '$versionName' (code $versionCode)")
         resValue("string", "contact_email", "\"$contactEmail\"")
@@ -112,5 +112,4 @@ dependencies {
     androidTestImplementation(libs.androidx.rules)
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.androidx.uiautomator)
-
 }

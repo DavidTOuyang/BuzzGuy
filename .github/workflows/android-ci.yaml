@@ -138,13 +138,14 @@ jobs:
       - name: Determine Version Name
         id: version
         run: |
-          # Use the GitHub Run Number as a base for the version code.
-          # This guarantees the version code always increases globally for the repo.
-          # We add 2000 to avoid conflicts with any manual version codes you might have used previously.
-          RUN_NUM=${{ github.run_number }}
-          VERSION_CODE=$((RUN_NUM + 2000))
+          # The github.run_id is a unique ID for each workflow run and is independent
+          # of the workflow filename or name. Use a large offset to prevent
+          # conflicts with any previously published versions.
+          RUN_ID_STRING=${{ github.run_id }}
+          VERSION_CODE_OFFSET=1000000 # Use a very large offset
+          VERSION_CODE=$((RUN_ID_STRING + VERSION_CODE_OFFSET))
           echo "VERSION_CODE=${VERSION_CODE}" >> $GITHUB_OUTPUT
-          echo "Determined VERSION_CODE: $VERSION_CODE"   
+          echo "Determined VERSION_CODE: $VERSION_CODE"
           
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             # This is a tag build, use the tag name
