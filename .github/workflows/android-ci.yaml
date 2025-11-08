@@ -140,13 +140,12 @@ jobs:
         # It queries the Google Play API for the highest existing version code
         # across all tracks (internal, production, etc.).
         run: |
-          # 1. Authenticate with Google Cloud
-          # The recommended way is to directly output the secret to the file.
-          echo "${{ secrets.GCP_SA_KEY }}" > gcp_sa_key.json
+          # The secret must contain the full JSON key
+          cat <<EOF > gcp_sa_key.json
+          ${{ secrets.GCP_SA_KEY }}
+          EOF
           gcloud auth activate-service-account --key-file=gcp_sa_key.json
-      
           PACKAGE_NAME="com.mygroup.buzzguy"
-          
           # 2. Query the Play Store API and find the maximum version code.
           # The 'jq' filter finds the highest version code and defaults to 0 if none exist.
           MAX_CODE=$(gcloud alpha play releases list --pkg="$PACKAGE_NAME" --format=json | \
