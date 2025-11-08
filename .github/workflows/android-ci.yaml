@@ -158,31 +158,46 @@ jobs:
         run: |
           # 1. Authenticate and get an access token WITH the correct scope
           ACCESS_TOKEN=$(gcloud auth print-access-token --scopes=https://www.googleapis.com/auth/androidpublisher)
-    
-          # 2. Make the API call and store the response in a variable
-          API_RESPONSE=$(curl -s -X GET \
+          
+          # 2. Start a new edit to get a valid editId for querying published tracks
+          EDIT_RESPONSE=$(curl -s -X POST \
             "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/edits" \
             -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-            -H "Content-Type: application/json")
-      
-          # 3. (CRITICAL) Check if the API call was successful by looking for an 'error' field
-          if echo "${API_RESPONSE}" | jq -e '.error' > /dev/null; then
-            echo "::error::Google Play API returned an error:"
-            echo "${API_RESPONSE}"
+            -H "Content-Type: application/json" \
+            -d '{}')
+        
+          # Check if starting an edit was successful
+          if echo "${EDIT_RESPONSE}" | jq -e '.error' > /dev/null; then
+            echo "::error::Failed to start a new edit:"
+            echo "${EDIT_RESPONSE}"
             exit 1
           fi
 
-          # 4. Now that we know the JSON is valid, parse it with jq
-          # Use 'sort -g' for general numeric sorting which is more robust
-          MAX_CODE=$(echo "${API_RESPONSE}" | \
+          EDIT_ID=$(echo "${EDIT_RESPONSE}" | jq -r '.id')
+          echo "Created new Edit ID: ${EDIT_ID}"
+          
+          # 3. Use the editId to list all track data (which contains current published versions)
+          TRACKS_RESPONSE=$(curl -s -X GET \
+            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/edits/${EDIT_ID}/tracks" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}")
+          
+          # 4. (CRITICAL) Check if the API call was successful
+          if echo "${TRACKS_RESPONSE}" | jq -e '.error' > /dev/null; then
+            echo "::error::Google Play API returned an error when fetching tracks:"
+            echo "${TRACKS_RESPONSE}"
+            exit 1
+          fi
+
+          # 5. Parse the track data with jq to find the absolute max version code
+          # We search all tracks for all releases and all versionCodes.
+          MAX_CODE=$(echo "${TRACKS_RESPONSE}" | \
             jq '[.tracks[].releases[].versionCodes[] | tonumber] | max // 0')
           
-          # Default to 0 (already handled by 'max // 0' in jq, but good for clarity)
-          if [ -z "$MAX_CODE" ]; then
+          # Calculate the next version code and set outputs for subsequent steps.
+          if [[ -z "$MAX_CODE" || "$MAX_CODE" == "null" ]]; then
             MAX_CODE=0
           fi
           
-          # Calculate the next version code and set outputs for subsequent steps.
           NEXT_CODE=$((MAX_CODE + 1))
           echo "Found Max Play Store Version Code: $MAX_CODE"
           echo "Setting Next Version Code to: $NEXT_CODE"
