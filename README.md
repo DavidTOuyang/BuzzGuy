@@ -156,6 +156,7 @@ powershell
 
 # Contribution
 Here is a list of contributors who supported this project:
+
 <a href="https://github.com/DavidTOuyang/BuzzGuy/graphs/contributors">
     <img src="https://contrib.rocks/image?repo=DavidTOuyang/BuzzGuy" />
 </a>
