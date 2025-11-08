@@ -139,7 +139,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y google-cloud-cli
-          gcloud components install app-bundle-lib gcloud-internal-play-plugin -q
+          gcloud components install beta -q
 
       - name: Fetch Max Play Store Version Code and Set Next Version
         id: version
