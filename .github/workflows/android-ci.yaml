@@ -149,7 +149,7 @@ jobs:
           
           # Query the Play Store API and find the maximum version code.
           # The 'jq' filter finds the highest version code and defaults to 0 if none exist.
-          MAX_CODE=$(gcloud beta play releases list --track=internal --pkg="$PACKAGE_NAME" --format=json | \
+          MAX_CODE=$(gcloud play releases list --track=internal --pkg="$PACKAGE_NAME" --format=json | \
           jq '[.[] | .versionCodes[] | tonumber] | max // 0')
           
           # Calculate the next version code and set outputs for subsequent steps.
