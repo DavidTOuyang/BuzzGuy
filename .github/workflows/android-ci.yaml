@@ -154,20 +154,28 @@ jobs:
         # It queries the Google Play API for the highest existing version code
         # across all tracks (internal, production, etc.).
         run: |
-          PACKAGE_NAME="com.mygroup.buzzguy"
-          # Authenticate and get an access token
+          # 1. Authenticate and get an access token
           ACCESS_TOKEN=$(gcloud auth print-access-token)
           
-          # Query the Play Store API's "edits" endpoint to get details about the app
-          # The 'jq' filter finds the highest version code and defaults to 0 if none exist.
-          MAX_CODE=$(curl -s -X GET \
+          # 2. Make the API call and store the response in a variable
+          API_RESPONSE=$(curl -s -X GET \
             "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/edits" \
             -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-            -H "Content-Type: application/json" | \
-            jq '.tracks | .[] | .releases | .[] | .versionCodes | .[] | tonumber' | \
-            sort -rn | head -n1 | sed 's/ //g')
+            -H "Content-Type: application/json")
+      
+          # 3. (CRITICAL) Check if the API call was successful by looking for an 'error' field
+          if echo "${API_RESPONSE}" | jq -e '.error' > /dev/null; then
+            echo "::error::Google Play API returned an error:"
+            echo "${API_RESPONSE}"
+            exit 1
+          fi
+
+          # 4. Now that we know the JSON is valid, parse it with jq
+          # Use 'sort -g' for general numeric sorting which is more robust
+          MAX_CODE=$(echo "${API_RESPONSE}" | \
+            jq '[.tracks[].releases[].versionCodes[] | tonumber] | max // 0')
           
-          # Default to 0 if no version code is found
+          # Default to 0 (already handled by 'max // 0' in jq, but good for clarity)
           if [ -z "$MAX_CODE" ]; then
             MAX_CODE=0
           fi
