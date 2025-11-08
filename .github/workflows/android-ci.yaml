@@ -155,11 +155,22 @@ jobs:
         # across all tracks (internal, production, etc.).
         run: |
           PACKAGE_NAME="com.mygroup.buzzguy"
+          # Authenticate and get an access token
+          ACCESS_TOKEN=$(gcloud auth print-access-token)
           
-          # Query the Play Store API and find the maximum version code.
+          # Query the Play Store API's "edits" endpoint to get details about the app
           # The 'jq' filter finds the highest version code and defaults to 0 if none exist.
-          MAX_CODE=$(gcloud play releases list --track=internal --pkg="$PACKAGE_NAME" --format=json | \
-          jq '[.[] | .versionCodes[] | tonumber] | max // 0')
+          MAX_CODE=$(curl -s -X GET \
+            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/edits" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" | \
+            jq '.tracks | .[] | .releases | .[] | .versionCodes | .[] | tonumber' | \
+            sort -rn | head -n1 | sed 's/ //g')
+          
+          # Default to 0 if no version code is found
+          if [ -z "$MAX_CODE" ]; then
+            MAX_CODE=0
+          fi
           
           # Calculate the next version code and set outputs for subsequent steps.
           NEXT_CODE=$((MAX_CODE + 1))
