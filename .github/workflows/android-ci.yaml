@@ -134,6 +134,10 @@ jobs:
         with:
           google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
 
+      # Install the essential component
+      - name: Install Google Play gcloud components
+        run: gcloud components install play-games -q
+
       - name: Fetch Max Play Store Version Code and Set Next Version
         id: version
         # This script runs before determining the new version.
