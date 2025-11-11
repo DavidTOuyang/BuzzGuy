@@ -20,105 +20,105 @@ on:
 jobs:
 
   # Checking for the syntax of the entire source code
-#  lint:
-#    runs-on: ubuntu-latest
-#    steps:
-#      # Checkout the repository
-#      - name: Checkout repository
-#        uses: actions/checkout@v5
-#
-#      # The composite action for checkout and java
-#      - name: Setup environment
-#        uses: ./.github/actions/setup-env
-#        with:
-#          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
-#
-#      # Add a step to run Android Lint
-#      - name: Run Android Lint
-#        run: ./gradlew lint
-#
-#  # Running all the tests
-#  unit_test:
-#    needs: lint
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v5
-#
-#      - name: Setup environment
-#        uses: ./.github/actions/setup-env
-#        with:
-#          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
-#
-#      # Cache Gradle dependencies to speed up builds
-#      - name: Cache Gradle
-#        uses: actions/cache@v4
-#        with:
-#          path: |
-#            ~/.gradle/caches
-#            ~/.gradle/wrapper
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-#          restore-keys: |
-#            ${{ runner.os }}-gradle-
-#
-#      # Run the Unit Tests
-#      - name: Run Unit Tests
-#        run: ./gradlew test --continue
-#
-#      # Upload Unit Test results as an artifact
-#      - name: Upload Unit Test Reports
-#        uses: actions/upload-artifact@v4
-#        if: always() # Upload even if tests fail
-#        with:
-#         name: unit-test-reports
-#         path: app/build/reports/tests/testDebugUnitTest/
-#         retention-days: 3
-#
-#  instrumented_test:
-#    needs: unit_test
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v5
-#
-#      - name: Enable KVM
-#        run: |
-#          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-#          sudo udevadm control --reload-rules
-#          sudo udevadm trigger --name-match=kvm
-#
-#      - name: Setup environment
-#        uses: ./.github/actions/setup-env
-#        with:
-#          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
-#
-#      # Run the Instrument Tests
-#      - name: Run Instrument Tests
-#        uses: reactivecircus/android-emulator-runner@v2.34.0
-#        with:
-#          api-level: 34
-#          target: google_apis # Ensures a stable, resource-efficient target
-#          arch: x86_64 # Specify the 64-bit architecture
-#          # Adjust ram-size to prevent resource starvation on the CI runner
-#          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
-#          script: |
-#            adb wait-for-device
-#            adb shell input keyevent 82
-#            adb devices
-#            ./gradlew connectedAndroidTest --continue
-#
-#      # Upload Instrument Test results as an artifact
-#      - name: Upload Instrument Test Reports
-#        uses: actions/upload-artifact@v4
-#        if: always()
-#        with:
-#          name: instrument-test-reports
-#          path: app/build/reports/androidTests/connected/
-#          retention-days: 3
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # The composite action for checkout and java
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Add a step to run Android Lint
+      - name: Run Android Lint
+        run: ./gradlew lint
+
+  # Running all the tests
+  unit_test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Cache Gradle dependencies to speed up builds
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # Run the Unit Tests
+      - name: Run Unit Tests
+        run: ./gradlew test --continue
+
+      # Upload Unit Test results as an artifact
+      - name: Upload Unit Test Reports
+        uses: actions/upload-artifact@v4
+        if: always() # Upload even if tests fail
+        with:
+         name: unit-test-reports
+         path: app/build/reports/tests/testDebugUnitTest/
+         retention-days: 3
+
+  instrumented_test:
+    needs: unit_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          google_services_json: ${{ secrets.BUZZGUY_GOOGLE_SERVICES_JSON }}
+
+      # Run the Instrument Tests
+      - name: Run Instrument Tests
+        uses: reactivecircus/android-emulator-runner@v2.34.0
+        with:
+          api-level: 34
+          target: google_apis # Ensures a stable, resource-efficient target
+          arch: x86_64 # Specify the 64-bit architecture
+          # Adjust ram-size to prevent resource starvation on the CI runner
+          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
+          script: |
+            adb wait-for-device
+            adb shell input keyevent 82
+            adb devices
+            ./gradlew connectedAndroidTest --continue
+
+      # Upload Instrument Test results as an artifact
+      - name: Upload Instrument Test Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: instrument-test-reports
+          path: app/build/reports/androidTests/connected/
+          retention-days: 3
 
   # Packaging the app for distribution
   build:
-#    needs: instrumented_test
+    needs: instrumented_test
     runs-on: ubuntu-latest
     env:
       PACKAGE_NAME: com.mygroup.buzzguy
