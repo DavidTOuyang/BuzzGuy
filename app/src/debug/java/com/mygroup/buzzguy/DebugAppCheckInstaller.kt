@@ -7,7 +7,7 @@ import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import androidx.core.content.edit
 
-class DebugAppCheckInstaller(private val context: Context) : AppCheckProviderFactoryInstaller {
+class DebugAppCheckInstaller(private val context: Context) : AppCheckInstaller {
     override fun install(firebaseAppCheck: FirebaseAppCheck) {
         Log.d("AppCheckSetup", "Build is DEBUG. Installing DebugAppCheckProviderFactory.")
 

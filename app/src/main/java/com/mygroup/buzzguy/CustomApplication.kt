@@ -16,19 +16,11 @@ class CustomApplication : Application() {
         Log.d("AppCheckSetup", "FirebaseApp initialized.")
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
 
-        if (BuildConfig.DEBUG) {
-            // This line links to the DebugAppCheckInstaller class in the debug source set
-            DebugAppCheckInstaller(applicationContext).install(firebaseAppCheck)
-        } else {
-            // This uses the release provider, which is always available in the main source set
-            Log.d(
-                "AppCheckSetup",
-                "Build is RELEASE. Installing PlayIntegrityAppCheckProviderFactory."
-            )
-            firebaseAppCheck.installAppCheckProviderFactory(
-                PlayIntegrityAppCheckProviderFactory.getInstance()
-            )
-        }
+        // Use the factory to get the correct installer for the current build type.
+        // Pass 'this' (the Application Context) to the create method.
+        val installer = AppCheckInstallerFactory.create(this)
+
+        installer.install(firebaseAppCheck)
         Log.d("AppCheckSetup", "App Check provider installed.")
     }
 }
