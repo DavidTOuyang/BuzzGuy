@@ -61,7 +61,6 @@ android {
         return properties.getProperty("firebase.debug.token", "")
     }
 
-
     namespace = "com.mygroup.buzzguy"
     compileSdk = 36
 
