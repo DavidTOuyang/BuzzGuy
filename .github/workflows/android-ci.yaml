@@ -77,6 +77,8 @@ jobs:
   instrumented_test:
     needs: unit_test
     runs-on: ubuntu-latest
+    env:
+      FIREBASE_DEBUG_TOKEN: ${{ secrets.FIREBASE_DEBUG_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
