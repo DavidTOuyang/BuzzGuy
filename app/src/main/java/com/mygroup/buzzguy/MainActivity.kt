@@ -102,6 +102,7 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
             val userId = auth.currentUser?.uid ?: ""
 
             if (question.isNotEmpty() && userId.isNotEmpty()) {
+                setInputEnabled(false)
                 myAIModel.generateContent(question)
                 addMessageToFirestore(userId, question, Message.SENT_BY_ME)
                 binding.messageEditText.setText("")
@@ -117,6 +118,7 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
                     Message.SENT_BY_BOT
                 )
             }
+            setInputEnabled(true)
         }
     }
 
@@ -349,5 +351,11 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private fun showContentDialog(title: String, content: List<ContentItem>) {
         val bottomSheetDialog = ContentBottomSheetDialog.newInstance(title, content)
         bottomSheetDialog.show(supportFragmentManager, bottomSheetDialog.tag)
+    }
+
+    // Prevent rapid inputs
+    private fun setInputEnabled(enabled: Boolean) {
+        binding.messageEditText.isEnabled = enabled
+        binding.sendButton.isEnabled = enabled
     }
 }

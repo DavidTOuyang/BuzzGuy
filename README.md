@@ -6,7 +6,7 @@
 
 # BuzzGuy
 
-<div align="center">
+<div style="text-align: center;">
     <img src="/app/src/main/ic_launcher-playstore.png" alt="BuzzGuy Logo" width="150" height="150">
 </div>
 
@@ -55,6 +55,12 @@ This project requires a `google-services.json` file from Firebase to enable back
 
 The app will not build or run correctly without this file.
 
+### Setup Firebase Debug Token
+
+This project is set up to use Firebase App Check, a security feature that ensures requests to your backend come from your genuine app. 
+
+For initial development and standard builds, this step is not required. The app will build and run correctly without it. 
+If you decide to enable and test App Check later, you will need to generate a debug token. You can do this by following the official Firebase documentation. For detailed instructions, please refer to the guide on using the App Check debug provider.
 
 ### Sync Project with Gradle Files
 
@@ -133,11 +139,8 @@ You can generate a keystore file by following the official Android Studio docume
 3. Run the following keytool command. Replace your-key-alias and your-keystore-name.jks with your own values.
 
 ``` 
-> keytool -genkey -v -keystore your-keystore-name.jks -alias your-key-alias -keyalg RSA -keysize 2048 -validity 10000
-> 
->
-> The tool will then prompt you to create a password for the keystore and another for the key alias. 
-It will also ask for your name, organization, and location. **Remember these passwords**, as you will need to add them as secrets to GitHub Actions.
+shell
+keytool -genkey -v -keystore your-keystore-name.jks -alias your-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 To store this `.jks` file in the `KEYSTORE_FILE` secret, you must first Base64 encode it. Run the appropriate command for your system:
@@ -158,7 +161,7 @@ powershell
 Here is a list of contributors who supported this project:
 
 <a href="https://github.com/DavidTOuyang/BuzzGuy/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=DavidTOuyang/BuzzGuy" />
+    <img src="https://contrib.rocks/image?repo=DavidTOuyang/BuzzGuy"  alt="BuzzGuy Contributors"/>
 </a>
 
 # License
