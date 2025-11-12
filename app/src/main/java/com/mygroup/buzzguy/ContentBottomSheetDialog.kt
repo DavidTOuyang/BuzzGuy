@@ -16,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mygroup.buzzguy.databinding.ContentDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import android.text.method.LinkMovementMethod
 
 class ContentBottomSheetDialog : BottomSheetDialogFragment() {
     companion object {
@@ -39,7 +40,7 @@ class ContentBottomSheetDialog : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = ContentDialogBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -131,6 +132,9 @@ class ContentBottomSheetDialog : BottomSheetDialogFragment() {
             }
         }
         binding.dialogContent.text = spannableBuilder
+
+        // For clicking the dynamic email link.
+        binding.dialogContent.movementMethod = LinkMovementMethod.getInstance()
 
         binding.closeButton.setOnClickListener {
             dismiss() // Use dismiss() for BottomSheetDialogFragment
