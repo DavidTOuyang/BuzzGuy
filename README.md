@@ -6,7 +6,7 @@
 
 # BuzzGuy
 
-<div style="text-align: center;">
+<div align="center">
     <img src="/app/src/main/ic_launcher-playstore.png" alt="BuzzGuy Logo" width="150" height="150">
 </div>
 
