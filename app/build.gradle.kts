@@ -1,4 +1,5 @@
 import java.util.concurrent.TimeUnit
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -44,6 +45,22 @@ fun getVersionNameFromGit(): String {
 val contactEmail = System.getenv("CONTACT_EMAIL") ?: "local.build@mygroup.com"
 
 android {
+    // Function to read the properties file
+    fun getFirebaseDebugToken(): String? {
+        val envToken = System.getenv("FIREBASE_DEBUG_TOKEN")
+        if (!envToken.isNullOrEmpty()) {
+            return envToken
+        }
+        val properties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { input ->
+                properties.load(input)
+            }
+        }
+        return properties.getProperty("firebase.debug.token", "")
+    }
+
     namespace = "com.mygroup.buzzguy"
     compileSdk = 36
 
@@ -59,7 +76,20 @@ android {
         resValue("string", "contact_email", "\"$contactEmail\"")
     }
     buildTypes {
+        debug {
+            // Read the token and inject it into the BuildConfig class
+            buildConfigField(
+                "String",
+                "FIREBASE_APP_CHECK_DEBUG_TOKEN",
+                "\"${getFirebaseDebugToken()?.trim()}\""
+            )
+        }
         release {
+            buildConfigField(
+                "String",
+                "FIREBASE_APP_CHECK_DEBUG_TOKEN",
+                "\"\""
+            )
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -79,6 +109,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -104,6 +135,7 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.rules)
     implementation(libs.androidx.core)
+    implementation(libs.firebase.appcheck.playintegrity)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
 
@@ -112,4 +144,5 @@ dependencies {
     androidTestImplementation(libs.androidx.rules)
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.androidx.uiautomator)
+    debugImplementation(libs.firebase.appcheck.debug)
 }

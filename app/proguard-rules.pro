@@ -11,6 +11,9 @@
 -dontwarn io.ktor.client.plugins.HttpTimeout$Plugin
 -dontwarn io.ktor.client.plugins.HttpTimeout$HttpTimeoutCapabilityConfiguration
 
+# Keep the Message data class and its members for Firestore data mapping
+-keep class com.mygroup.buzzguy.Message { *; }
+
 -keep class io.ktor.client.plugins.contentnegotiation.ContentNegotiation { *; }
 -keep class io.ktor.client.plugins.contentnegotiation.ContentNegotiation$Plugin { *; }
 -keep class io.ktor.client.plugins.contentnegotiation.ContentNegotiation$Config { *; }
