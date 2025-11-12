@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mygroup.buzzguy.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import com.mygroup.buzzguy.viewmodel.ChatViewModel
 
 // Firebase packages
@@ -51,6 +52,8 @@ class MainActivity (): AppCompatActivity(), NavigationView.OnNavigationItemSelec
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Force the app to always use light mode and ignore system settings
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         analytics = Firebase.analytics
         binding = ActivityMainBinding.inflate(layoutInflater)
