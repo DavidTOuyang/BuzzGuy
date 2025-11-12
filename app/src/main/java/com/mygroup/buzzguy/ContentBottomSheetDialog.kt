@@ -100,10 +100,22 @@ class ContentBottomSheetDialog : BottomSheetDialogFragment() {
         val bulletIndent = 48 // Example: 48 pixels
         val bulletGapWidth = 16 // The gap between the bullet and the text
 
+        // Get the raw string for comparison and the email address for formatting
+        val rawContactString = getString(R.string.contact)
+        val emailAddress = getString(R.string.contact_email)
+
         contentItems.forEach { item ->
             when (item) {
                 is ContentItem.Paragraph -> {
-                    val htmlText = HtmlCompat.fromHtml(item.text, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    // Check if the current paragraph text is the one that needs formatting
+                    val textToProcess = if (item.text == rawContactString) {
+                        // It's the contact string, so format it with the email address
+                        String.format(item.text, emailAddress)
+                    } else {
+                        // It's a regular paragraph, use it as is
+                        item.text
+                    }
+                    val htmlText = HtmlCompat.fromHtml(textToProcess, HtmlCompat.FROM_HTML_MODE_LEGACY)
                     spannableBuilder.append(htmlText)
                 }
                 is ContentItem.BulletList -> {
