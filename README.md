@@ -160,6 +160,13 @@ powershell
 # Contribution
 Here is a list of contributors who supported this project:
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 <a href="https://github.com/DavidTOuyang/BuzzGuy/graphs/contributors">
     <img src="https://contrib.rocks/image?repo=DavidTOuyang/BuzzGuy"  alt="BuzzGuy Contributors"/>
 </a>
