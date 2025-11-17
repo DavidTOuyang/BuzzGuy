@@ -3,5 +3,19 @@
   "projectOwner": "DavidTOuyang",
   "files": [
     "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "ParisPianist196",
+      "name": "Abi Hendrick",
+      "avatar_url": "https://avatars.githubusercontent.com/u/92614024?v=4",
+      "profile": "https://abigailhendrick.com",
+      "contributions": [
+        "test"
+      ]
+    }
   ]
 }
