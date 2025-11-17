@@ -163,8 +163,17 @@ Here is a list of contributors who supported this project:
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/DavidTOuyang"><img src="https://avatars.githubusercontent.com/u/237416236?v=4?s=100" width="100px;" alt="DavidTOuyang"/><br /><sub><b>DavidTOuyang</b></sub></a><br /><a href="#code-DavidTOuyang" title="Code">💻</a> <a href="#research-DavidTOuyang" title="Research">🔬</a> <a href="#ideas-DavidTOuyang" title="Ideas, Planning, & Feedback">🤔</a></td>
+    </tr>
+  </tbody>
+</table>
+
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 <a href="https://github.com/DavidTOuyang/BuzzGuy/graphs/contributors">
