@@ -167,6 +167,7 @@ Here is a list of contributors who supported this project:
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/DavidTOuyang"><img src="https://avatars.githubusercontent.com/u/237416236?v=4?s=100" width="100px;" alt="DavidTOuyang"/><br /><sub><b>DavidTOuyang</b></sub></a><br /><a href="#code-DavidTOuyang" title="Code">💻</a> <a href="#research-DavidTOuyang" title="Research">🔬</a> <a href="#ideas-DavidTOuyang" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://abigailhendrick.com"><img src="https://avatars.githubusercontent.com/u/92614024?v=4?s=100" width="100px;" alt="Abi Hendrick"/><br /><sub><b>Abi Hendrick</b></sub></a><br /><a href="#userTesting-ParisPianist196" title="User Testing">📓</a></td>
     </tr>
   </tbody>
 </table>

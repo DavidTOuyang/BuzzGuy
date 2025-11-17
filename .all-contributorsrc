@@ -18,6 +18,15 @@
         "research",
         "ideas"
       ]
+    },
+    {
+      "login": "ParisPianist196",
+      "name": "Abi Hendrick",
+      "avatar_url": "https://avatars.githubusercontent.com/u/92614024?v=4",
+      "profile": "https://abigailhendrick.com",
+      "contributions": [
+        "userTesting"
+      ]
     }
   ]
 }
