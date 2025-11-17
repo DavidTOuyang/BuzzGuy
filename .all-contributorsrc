@@ -3,5 +3,21 @@
   "projectOwner": "DavidTOuyang",
   "files": [
     "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "DavidTOuyang",
+      "name": "DavidTOuyang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/237416236?v=4",
+      "profile": "https://github.com/DavidTOuyang",
+      "contributions": [
+        "code",
+        "research",
+        "ideas"
+      ]
+    }
   ]
 }
