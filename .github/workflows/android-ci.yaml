@@ -275,7 +275,7 @@ jobs:
           path: app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
           retention-days: 30
 
-  # Deploy the artifact to the INTERNAL track for testing
+  # Deploy the artifact to the Alpha track for testing
   deploy_internal:
     needs: build
     name: Deploy to Internal Track
@@ -320,7 +320,7 @@ jobs:
           releaseFiles: "*.aab"
           mappingFile: "mapping.txt"
           debugSymbols: ${{ steps.download-native-symbols.outcome == 'success' && 'native-debug-symbols.zip' || '' }}
-          track: internal
+          track: alpha
           status: completed
 
   # Deploy the artifact to the PRODUCTION track when a tag is created
